@@ -21,8 +21,8 @@
 //////////////////////////////////////////////////////////////////////////
 #if defined(WIN32) || defined(_3DS)
 
-#include "../../Dependencies/include/png.h"
-#include "../../Dependencies/include/fmod.h"
+#include <png.h>
+//#include "../../Dependencies/include/fmod.h"
 
 
 JGE::JGE()
@@ -147,19 +147,13 @@ bool JGE::GetButtonClick(u32 button)
 
 u8 JGE::GetAnalogX()
 {
-	if (JGEGetKeyState('A')) return 0;
-	if (JGEGetKeyState('D')) return 0xff;
-
-	return 0x80;
+    return JGEGetAnalogX();
 }
 
 
 u8 JGE::GetAnalogY()
 {
-	if (JGEGetKeyState('W')) return 0;
-	if (JGEGetKeyState('S')) return 0xff;
-
-	return 0x80;
+    return JGEGetAnalogY();
 }
 
 

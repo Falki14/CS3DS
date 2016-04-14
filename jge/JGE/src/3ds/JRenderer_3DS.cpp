@@ -7,8 +7,8 @@
 // Copyright (c) 2007 James Hui (a.k.a. Dr.Watson) <jhkhui@gmail.com>
 //
 //-------------------------------------------------------------------------------------
-
-#include "../../Dependencies/include/png.h"
+#define PNG_READ_EXPAND_SUPPORTED
+#include <png.h>
 #include "../../Dependencies/include/fmod.h"
 
 #ifdef __cplusplus
@@ -558,7 +558,7 @@ static void jpg_null(j_decompress_ptr cinfo)
 {
 }
 
-static unsigned char jpg_fill_input_buffer(j_decompress_ptr cinfo)
+static int jpg_fill_input_buffer(j_decompress_ptr cinfo)
 {
     ////    ri.Con_Printf(PRINT_ALL, "Premature end of JPEG data\n");
     return 1;
@@ -918,7 +918,7 @@ void JRenderer::LoadPNG(TextureInfo &textureInfo, const char *filename, int mode
     png_set_strip_16(png_ptr);
     png_set_packing(png_ptr);
     if (color_type == PNG_COLOR_TYPE_PALETTE) png_set_palette_to_rgb(png_ptr);
-    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_gray_1_2_4_to_8(png_ptr);
+    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) png_set_expand_gray_1_2_4_to_8(png_ptr);
     if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) png_set_tRNS_to_alpha(png_ptr);
     png_set_filler(png_ptr, 0xff, PNG_FILLER_AFTER);
 
@@ -1074,7 +1074,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
     ColorMapObject *palette;
     int ExtCode;
     DWORD i, j;
-    if ((GifFileIn = DGifOpen(handle, readFunc)) == NULL)
+    if ((GifFileIn = DGifOpen(handle, readFunc, 0)) == NULL)
         return 1;
     *bgcolor = 0;
     textureInfo.mWidth = 0;
@@ -1084,7 +1084,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
     do {
         if (DGifGetRecordType(GifFileIn, &RecordType) == GIF_ERROR)
         {
-            DGifCloseFile(GifFileIn);
+            DGifCloseFile(GifFileIn, 0);
             return 1;
         }
 
@@ -1093,12 +1093,12 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
             {
                 if (DGifGetImageDesc(GifFileIn) == GIF_ERROR)
                 {
-                    DGifCloseFile(GifFileIn);
+                    DGifCloseFile(GifFileIn, 0);
                     return 1;
                 }
                 if((palette = (GifFileIn->SColorMap != NULL) ? GifFileIn->SColorMap : GifFileIn->Image.ColorMap) == NULL)
                 {
-                    DGifCloseFile(GifFileIn);
+                    DGifCloseFile(GifFileIn, 0);
                     return 1;
                 }
                 textureInfo.mWidth = GifFileIn->Image.Width;
@@ -1106,7 +1106,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
                 *bgcolor = gif_color32(GifFileIn->SBackGroundColor);
                 if((LineIn = (GifRowType) malloc(GifFileIn->Image.Width * sizeof(GifPixelType))) == NULL)
                 {
-                    DGifCloseFile(GifFileIn);
+                    DGifCloseFile(GifFileIn, 0);
                     return 1;
                 }
                 textureInfo.mTexWidth = getNextPower2(GifFileIn->Image.Width);
@@ -1116,7 +1116,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
                 if((p32 = (DWORD *)malloc(sizeof(PIXEL_TYPE) * textureInfo.mTexWidth * textureInfo.mTexHeight)) == NULL)
                 {
                     free((void *)LineIn);
-                    DGifCloseFile(GifFileIn);
+                    DGifCloseFile(GifFileIn, 0);
                     return 1;
                 }
                 DWORD * curr = p32;
@@ -1128,7 +1128,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
                     {
                         free((void *)p32);
                         free((void *)LineIn);
-                        DGifCloseFile(GifFileIn);
+                        DGifCloseFile(GifFileIn, 0);
                         return 1;
                     }
                     for(j = 0; j < GifFileIn->Image.Width; j ++)
@@ -1157,7 +1157,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
                     }
                     if(LineIn != NULL)
                         free((void *)LineIn);
-                    DGifCloseFile(GifFileIn);
+                    DGifCloseFile(GifFileIn, 0);
                     return 1;
                 }
                 while (Extension != NULL) {
@@ -1170,7 +1170,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
                         }
                         if(LineIn != NULL)
                             free((void *)LineIn);
-                        DGifCloseFile(GifFileIn);
+                        DGifCloseFile(GifFileIn, 0);
                         return 1;
                     }
                 }
@@ -1185,7 +1185,7 @@ int JRenderer::image_readgif(void * handle, TextureInfo &textureInfo, DWORD * bg
 
     if(LineIn != NULL)
         free((void *)LineIn);
-    DGifCloseFile(GifFileIn);
+    DGifCloseFile(GifFileIn, 0);
 
     return 0;
 }
@@ -1319,12 +1319,16 @@ void JRenderer::Enable2D()
 
     mCurrentRenderMode = MODE_2D;
 
-    glViewport (0, 0, (GLsizei)SCREEN_WIDTH, (GLsizei)SCREEN_HEIGHT);	// Reset The Current Viewport
+    glViewport (0, 0, (GLsizei)240, (GLsizei)400);	// Reset The Current Viewport
     glMatrixMode (GL_PROJECTION);										// Select The Projection Matrix
     glLoadIdentity ();													// Reset The Projection Matrix
-
+    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+//    glTranslatef(-0.5f, -0.5f, 0.0f);
 //    gluOrtho2D(0.0f, SCREEN_WIDTH_F-1.0f, 0.0f, SCREEN_HEIGHT_F-1.0f);
     glOrtho(0.0f, SCREEN_WIDTH_F-1.0f, 0.0f, SCREEN_HEIGHT_F-1.0f, -1.0f, 1.0f);
+//    glTranslatef((SCREEN_WIDTH_F - 1.0f) / 2.0f, (SCREEN_HEIGHT_F - 1.0f) / 2.0f, 0.0f);
+//    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+//    glTranslatef(-(SCREEN_WIDTH_F - 1.0f) / 2.0f, -(SCREEN_HEIGHT_F - 1.0f) / 2.0f, 0.0f);
 
     glMatrixMode (GL_MODELVIEW);										// Select The Modelview Matrix
     glLoadIdentity ();													// Reset The Modelview Matrix
@@ -1360,6 +1364,8 @@ void JRenderer::Enable3D()
     glLoadIdentity ();															// Reset The Projection Matrix
     gluPerspective (mFOV, (GLfloat)SCREEN_WIDTH/(GLfloat)SCREEN_HEIGHT,	// Calculate The Aspect Ratio Of The Window
                     0.5f, 1000.0f);
+    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
+                    
     glMatrixMode (GL_MODELVIEW);										// Select The Modelview Matrix
     glLoadIdentity ();													// Reset The Modelview Matrix
 

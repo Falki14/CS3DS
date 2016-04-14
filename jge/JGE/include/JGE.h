@@ -34,6 +34,12 @@
 	BOOL JGEGetKeyState(int key);
 	bool JGEGetButtonState(u32 button);
 	bool JGEGetButtonClick(u32 button);
+    u8 JGEGetAnalogX();
+    u8 JGEGetAnalogY();
+
+#ifdef _3DS
+#include <3ds.h>
+#endif
 
 #else
 
@@ -80,7 +86,6 @@ private:
 	float mDeltaTime;
 
 	JMusic *mCurrentMusic;
-	
 #else
 	SceCtrlData mCtrlPad;
 	u32 mOldButtons;

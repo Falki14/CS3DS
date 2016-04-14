@@ -13,7 +13,7 @@ void GameStateLoading::Start()
 
 	mRenderer->EnableVSync(true);
 
-	JTexture* bgTexture = mRenderer->LoadTexture("gfx/bg.png");					// load bg
+	JTexture* bgTexture = mRenderer->LoadTexture("gfx/bg.PNG");					// load bg
 	gBgQuad = new JQuad(bgTexture, 0.0f, 0.0f, 480.0f, 272.0f);
 	JTexture* logoTexture = mRenderer->LoadTexture("gfx/logo.png");				// load logo
 	gLogoQuad = new JQuad(logoTexture, 0.0f, 0.0f, 256.0f, 128.0f);
@@ -248,7 +248,7 @@ int GameStateLoading::Load(int stage) {
 		case 5: {
 			int mNumGuns = 0;
 			FILE *file;
-			file = fopen("data/guns.txt", "r"); 
+			file = fopen("data/guns.txt", "r");
 			char line[1024]; 
 			fgets(line,1024,file);  // Get one line from your file into a buffer 
 			sscanf(line,"%d",&mNumGuns);  // read mCols and mRows of your map from the file 

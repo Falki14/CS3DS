@@ -20,7 +20,7 @@ void GameStateOptions::Create()
 
 
 	//initial check to use nickname
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32)
 	#else
 	char* nameconfig = GetConfig("data/config.txt","name");
 	if (nameconfig != NULL) {
@@ -42,7 +42,7 @@ void GameStateOptions::Create()
 	}
 
 	if (strcmp(name,"default") == 0) {
-		sceUtilityGetSystemParamString(PSP_SYSTEMPARAM_ID_STRING_NICKNAME, name, 15);
+		strncpy(name, "machinamentum", 15);
 		name[15] = '\0';
 
 		movementstyle = ABSOLUTE1;

@@ -1,5 +1,9 @@
 #include "GameStateNewGame.h"
 
+#ifdef _3DS
+#include <malloc.h>
+#endif
+
 GameStateNewGame::GameStateNewGame(GameApp* parent): GameState(parent)
 {
 }
@@ -8,7 +12,6 @@ GameStateNewGame::~GameStateNewGame()
 {
 
 }
-
 
 void GameStateNewGame::Create()
 {
@@ -21,12 +24,31 @@ void GameStateNewGame::Create()
 	gFont->SetBase(0);	// using 2nd font
 
 	int y = 20;
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32)
 	for (int i=0; i<10; i++) {
 		char buffer[10];
 		sprintf(buffer,"test%d",i);
 		mMapsListBox->AddItem(new MapItem(buffer));
 	}
+    #elif defined(_3DS)
+    int index = 0;
+    DIR *dip;
+    struct dirent *dit;
+    dip = opendir("maps");
+    char fullname[512];
+
+    while ((dit = readdir(dip)) != NULL)
+    {
+        static char * name;
+        name = (char*)memalign( 16, 300);
+        sprintf(name,"%s" , dit->d_name);
+
+        if ((dit->d_type == DT_DIR) && stricmp (name, ".") != 0 && stricmp (name, "..") != 0)
+        {
+            mMapsListBox->AddItem(new MapItem(name));
+        }
+    }
+    closedir(dip);
 	#else
 	
 	int index = 0;

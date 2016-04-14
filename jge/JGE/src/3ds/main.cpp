@@ -39,8 +39,8 @@ static int GetTickCount()
 
 //#include "..\src\GameApp.h"
 
-bool	active=TRUE;			// Window Active Flag Set To TRUE By Default
-bool	fullscreen=FALSE;		// Windowed Mode By Default
+bool	active=true;			// Window Active Flag Set To TRUE By Default
+bool	fullscreen=false;		// Windowed Mode By Default
 
 DWORD	lastTickCount;
 
@@ -58,33 +58,43 @@ JGameLauncher* g_launcher = NULL;
 static u32 gButtons = 0;
 static u32 gOldButtons = 0;
 
+static circlePosition mCirclePos;
 
-static u32 gPSPKeyMasks[17] =
-{
-    PSP_CTRL_SELECT,
-    PSP_CTRL_START,
-    PSP_CTRL_UP,
-    PSP_CTRL_RIGHT,
-    PSP_CTRL_DOWN,
-    PSP_CTRL_LEFT,
-    PSP_CTRL_LTRIGGER,
-    PSP_CTRL_RTRIGGER,
-    PSP_CTRL_TRIANGLE,
-    PSP_CTRL_CIRCLE,
-    PSP_CTRL_CROSS,
-    PSP_CTRL_SQUARE,
-    PSP_CTRL_HOME,
-    PSP_CTRL_HOLD,
-    PSP_CTRL_NOTE,
-    PSP_CTRL_CIRCLE,
-    PSP_CTRL_START,
-};
+u8 JGEGetAnalogX() {
+    if (mCirclePos.dx < -128) mCirclePos.dx = -128;
+    if (mCirclePos.dx > 127) mCirclePos.dx = 127;
+    return (u8)(mCirclePos.dx + 128);
+}
+
+u8 JGEGetAnalogY() {
+    s16 out = mCirclePos.dy;
+    if (out < -127) out = -127;
+    if (out > 127) out = 127;
+    return (u8)(128 - out);
+}
+
+inline u32 TransformButtons(u32 buttons) {
+    u32 out = 0;
+    out |= (buttons & KEY_START) ? PSP_CTRL_START : 0;
+    out |= (buttons & KEY_SELECT) ? PSP_CTRL_SELECT : 0;
+    out |= (buttons & KEY_DUP) ? PSP_CTRL_UP : 0;
+    out |= (buttons & KEY_DRIGHT) ? PSP_CTRL_RIGHT : 0;
+    out |= (buttons & KEY_DDOWN) ? PSP_CTRL_DOWN : 0;
+    out |= (buttons & KEY_DLEFT) ? PSP_CTRL_LEFT : 0;
+    out |= (buttons & KEY_L) ? PSP_CTRL_LTRIGGER : 0;
+    out |= (buttons & KEY_R) ? PSP_CTRL_RTRIGGER : 0;
+    out |= (buttons & KEY_X) ? PSP_CTRL_TRIANGLE : 0;
+    out |= (buttons & KEY_Y) ? PSP_CTRL_SQUARE : 0;
+    out |= (buttons & KEY_A) ? PSP_CTRL_CROSS : 0;
+    out |= (buttons & KEY_B) ? PSP_CTRL_CIRCLE : 0;
+    return out;
+}
 
 void JGEControl()
 {
     gOldButtons = gButtons;
 
-    gButtons = hidKeysDown();
+    gButtons = TransformButtons(hidKeysHeld());
 }
 
 
@@ -131,6 +141,7 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		// Resize And Initialize Th
 
     // Calculate The Aspect Ratio Of The Window
     gluPerspective(75.0f,(GLfloat)width/(GLfloat)height,0.5f,1000.0f);
+    glRotatef(-90.0f, 0.0f, 0.0f, 1.0f);
 
     glMatrixMode(GL_MODELVIEW);							// Select The Modelview Matrix
     glLoadIdentity();									// Reset The Modelview Matrix
@@ -160,7 +171,7 @@ int InitGL(GLvoid)												// All Setup For OpenGL Goes Here
     glEnable(GL_SCISSOR_TEST);									// Enable Clipping
     //glScissor(20, 20, 320, 240);
 
-    return TRUE;												// Initialization Went OK
+    return true;												// Initialization Went OK
 }
 
 
@@ -179,7 +190,7 @@ int InitGame(GLvoid)
 
     //delete launcher;
 
-    return TRUE;
+    return true;
 }
 
 
@@ -273,6 +284,10 @@ int main(int argc, char **argv) {
     gfxInitDefault();
     consoleInit(GFX_BOTTOM, NULL);
     hidInit();
+    romfsInit();
+    osSetSpeedupEnable(true);
+
+    chdir("sdmc:/3ds/cspsp/");
 
     g_launcher = new JGameLauncher();
 
@@ -290,9 +305,10 @@ int main(int argc, char **argv) {
     DWORD	tickCount;
     int		dt;
 
-    while(!aptMainLoop())									// Loop That Runs While done=FALSE
+    while(aptMainLoop())									// Loop That Runs While done=FALSE
     {
         hidScanInput();
+        hidCircleRead(&mCirclePos);
         if (active)
         {
             if (g_engine->IsDone())
@@ -310,9 +326,7 @@ int main(int argc, char **argv) {
                 
                 DrawGLScene();					// Draw The Scene
                 gfxFlush(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL), 240, 400, GX_TRANSFER_FMT_RGB8);
-                gfxFlushBuffers();
                 gfxSwapBuffersGpu();
-                gspWaitForVBlank();
             }
         }
     }
@@ -321,6 +335,7 @@ int main(int argc, char **argv) {
         delete g_launcher;
 
     KillGLWindow();
+    romfsExit();
     hidExit();
     gfxExit();
     return 0;

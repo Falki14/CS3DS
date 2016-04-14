@@ -19,14 +19,14 @@ TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	src src/hge src/tinyxml src/unzip src/3ds
 DATA		:=	data
-INCLUDES	:=	include Dependencies/include
+INCLUDES	:=	include
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
-CFLAGS	:=	-g -Wall -O2 -mword-relocations \
+CFLAGS	:=	-I$(DEVKITPRO)/portlibs/armv6k/include -g -Wall -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
 			$(ARCH)
 

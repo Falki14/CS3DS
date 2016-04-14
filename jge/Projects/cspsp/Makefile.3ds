@@ -31,8 +31,9 @@ TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	src src/3ds
 DATA		:=	
-INCLUDES	:=	include ../../jge/include ../../jge/Dependencies/include
-ROMFS		:=	bin
+INCLUDES	:=	include ../../jge/include
+#ROMFS		:=	
+ICON		:=	icon_3ds.png
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -52,7 +53,7 @@ ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-L$(DEVKITPRO)/portlibs/armv6k/lib \
 		-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= ../../../JGE/lib/libJGE.a -lcaelina -lGL -ljpeg -lpng -lz -lctru -lm
+LIBS	:= ../../../JGE/lib/libJGE.a -lcaelina -lGL -lgif -ljpeg -lpng -lz -lctru -lm
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
