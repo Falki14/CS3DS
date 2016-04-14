@@ -17,6 +17,10 @@
 #include "hgecolor.h"
 #include "hgerect.h"
 
+#ifdef _3DS
+#include <cstring>
+#endif
+
 class JQuad;
 
 #define MAX_PARTICLES	500
