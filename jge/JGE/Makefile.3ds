@@ -17,7 +17,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(shell basename $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	src src/hge src/tinyxml src/unzip
+SOURCES		:=	src src/hge src/tinyxml src/unzip src/3ds
 DATA		:=	data
 INCLUDES	:=	include Dependencies/include
 

@@ -261,7 +261,7 @@ void GameStateOnline::End()
 		char directory[128];
 		sprintf(directory,"maps/%s",mMapName);
 
-		#ifdef WIN32
+		#if defined(WIN32) || defined(_3DS)
 		rmdir(directory);
 		#else
 		sceIoRmdir(directory);

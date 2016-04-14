@@ -94,7 +94,7 @@ void JGE::SetDelta(int delta)
 
 #ifdef _3DS
 #include <sys/time.h>
-int GetTickCount()
+static int GetTickCount()
 {
     struct timeval tv;
     if(gettimeofday(&tv, NULL) != 0)

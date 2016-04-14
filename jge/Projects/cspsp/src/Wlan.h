@@ -11,6 +11,17 @@
 
 #define bzero(p, l) memset(p, 0, l)
 #define bcopy(s, t, l) memmove(t, s, l)
+#elif defined(_3DS)
+#include "JGE.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <iostream>
+
+#define bzero(p, l) memset(p, 0, l)
+#define bcopy(s, t, l) memmove(t, s, l)
 #else
 #include <stdlib.h>
 #include <pspsdk.h>

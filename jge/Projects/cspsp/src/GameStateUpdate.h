@@ -19,6 +19,12 @@
 #define STAGE_UPDATEFAIL 6
 #define STAGE_RETURN 7
 
+#ifdef _3DS
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#define strcmpi strcasecmp
+#endif
+
 
 class GameStateUpdate:	public GameState
 {

@@ -3,6 +3,10 @@
 
 #ifdef WIN32
 #include <direct.h>
+#elif defined(_3DS)
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #else
 #include <sys/types.h>
 #include <sys/stat.h>

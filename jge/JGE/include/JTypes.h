@@ -460,7 +460,7 @@ public:
 
 	JTexture* mTex;
 	
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	float mTX0;
 	float mTY0;
 	float mTX1;

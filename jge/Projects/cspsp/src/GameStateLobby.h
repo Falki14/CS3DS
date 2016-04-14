@@ -10,7 +10,10 @@
 #include "UdpManager.h"
 #include "ListBox.h"
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
+#ifdef _3DS
+#define stricmp strcasecmp
+#endif
 #else
 #include <malloc.h>
 #include <pspdisplay.h>

@@ -2,6 +2,12 @@
 #include "TileMap.h"
 #include "Globals.h"
 
+#ifdef _3DS
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#define strcmpi strcasecmp
+#endif
+
 JRenderer* TileMap::mRenderer = NULL;
 
 //------------------------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ void GameStateOptions::Create()
 
 
 	//initial check to use nickname
-	#ifdef WIN32
+	#if defined(WIN32) || defined(_3DS)
 	#else
 	char* nameconfig = GetConfig("data/config.txt","name");
 	if (nameconfig != NULL) {

@@ -7,7 +7,7 @@
 #include "Wlan.h"
 #include "ListBox.h"
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 #else
 #include <malloc.h>
 #include <pspdisplay.h>

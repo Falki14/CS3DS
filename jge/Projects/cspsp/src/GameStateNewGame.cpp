@@ -21,7 +21,7 @@ void GameStateNewGame::Create()
 	gFont->SetBase(0);	// using 2nd font
 
 	int y = 20;
-	#ifdef WIN32
+	#if defined(WIN32) || defined(_3DS)
 	for (int i=0; i<10; i++) {
 		char buffer[10];
 		sprintf(buffer,"test%d",i);

@@ -6,7 +6,16 @@
 #include "GameState.h"
 #include "MenuItem.h"
 #include "ListBox.h"
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
+
+#ifdef _3DS
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#define strcmpi strcasecmp
+#include <dirent.h>
+#include <unistd.h>
+#endif
+
 #else
 #include <malloc.h>
 #include <pspdisplay.h>
