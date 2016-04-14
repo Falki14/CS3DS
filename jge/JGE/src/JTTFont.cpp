@@ -257,7 +257,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 
 	FT_GlyphSlot slot = mFace->glyph;
 
-	#ifdef WIN32
+	#if defined(WIN32) || defined(_3DS)
 		DWORD *texBuffer = new DWORD[mMaxCharWidth*mMaxCharHeight];
 		memset(texBuffer, 0, mMaxCharWidth*mMaxCharHeight*sizeof(DWORD));
 	#else
@@ -277,7 +277,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 	{
 		int top = mSize-slot->bitmap_top+1;
 
-		#ifdef WIN32
+		#if defined(WIN32) || defined(_3DS)
 			int offset = top*mMaxCharWidth + slot->bitmap_left + 2;
 		#else
 			int xx = x + slot->bitmap_left + 2;
@@ -302,7 +302,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 				{
 					grey = slot->bitmap.buffer[i * slot->bitmap.width + j];
 
-					#ifdef WIN32
+					#if defined(WIN32) || defined(_3DS)
 						texBuffer[i*mMaxCharWidth+j+offset] = RGBA(255, 255, 255, grey);
 					#else
 						SwizzlePlot(pTexture, ARGB(grey,255,255,255), (xx+j)*PIXEL_SIZE, yy+i, mTexWidth*PIXEL_SIZE, mTexHeight);
@@ -325,7 +325,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 					{
 						if (bits&mask)
 						{
-							#ifdef WIN32
+							#if defined(WIN32) || defined(_3DS)
 							texBuffer[i*mMaxCharWidth+j*8+k+offset] = RGBA(255, 255, 255, 255);
 							#else
 							SwizzlePlot(pTexture, ARGB(255,255,255,255), (xx+j*8+k)*PIXEL_SIZE, yy+i, mTexWidth*PIXEL_SIZE, mTexHeight);
@@ -343,7 +343,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 
 	mXAdvance[mCurr] = (u8)(slot->advance.x>>6);
 
-	#ifdef WIN32
+	#if defined(WIN32) || defined(_3DS)
 		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, mMaxCharWidth, mMaxCharHeight, GL_RGBA, GL_UNSIGNED_BYTE, texBuffer);
 	#else
 		sceKernelDcacheWritebackAll();
@@ -357,7 +357,7 @@ int JTTFont::PreCacheChar(u16 ch, u16 cachedCode)
 	if (mCurr >= mMaxCharCount)
 		mCurr = 0;
 
-	#ifdef WIN32
+	#if defined(WIN32) || defined(_3DS)
 		delete [] texBuffer;
 	#endif
 	

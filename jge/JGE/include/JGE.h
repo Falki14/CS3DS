@@ -22,9 +22,13 @@
 
 //#define _MP3_ENABLED_
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 
+    #ifdef WIN32
 	#include <windows.h>
+    #else
+    #define BOOL int
+    #endif
 
 	void JGEControl();
 	BOOL JGEGetKeyState(int key);
@@ -72,7 +76,7 @@ private:
 //	JMotionSystem* mMotionSystem;
 
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	float mDeltaTime;
 
 	JMusic *mCurrentMusic;
@@ -206,7 +210,7 @@ public:
 
 	void Assert(const char *filename, long lineNumber);
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	void SetDelta(int delta);
 #endif
 

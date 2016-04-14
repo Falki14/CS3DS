@@ -11,7 +11,7 @@
 #ifndef _MD2MODEL_H
 #define _MD2MODEL_H
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 
 #else
 
@@ -236,7 +236,7 @@ private:
 
 	void CheckNextState();
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	void CalculateNormal(float *p1, float *p2, float *p3);
 #else
 	void CalculateNormal(ScePspFVector3* normal, float *p1, float *p2, float *p3);

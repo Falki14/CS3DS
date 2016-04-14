@@ -5,6 +5,10 @@
 #include "../include/JGBKFont.h"
 #include "../include/JInputSystem.h"
 
+#ifdef _3DS
+#define stricmp strcasecmp
+#endif
+
 char input_table[3][9][4]={
 	{{',','a','b','c'},{'.','d','e','f'},{'!','g','h','i'},
 	{'-','j','k','l'},{' ','m',' ','n'},{'?','o','p','q'},

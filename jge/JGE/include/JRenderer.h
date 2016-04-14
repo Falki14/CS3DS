@@ -25,6 +25,8 @@
 
 	#include <windows.h>
 
+#elif defined(_3DS)
+
 #else
 
 	#include <pspgu.h>

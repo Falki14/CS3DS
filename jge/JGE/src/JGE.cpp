@@ -19,7 +19,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 
 #include "../../Dependencies/include/png.h"
 #include "../../Dependencies/include/fmod.h"
@@ -91,6 +91,18 @@ void JGE::SetDelta(int delta)
 {
 	mDeltaTime = (float)delta / 1000.0f;		// change to second
 }
+
+#ifdef _3DS
+#include <sys/time.h>
+int GetTickCount()
+{
+    struct timeval tv;
+    if(gettimeofday(&tv, NULL) != 0)
+        return 0;
+
+    return (tv.tv_sec * 1000) + (tv.tv_usec / 1000);
+}
+#endif
 
 int JGE::GetTime(void)
 {

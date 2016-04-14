@@ -23,6 +23,8 @@
 
 	#include <windows.h>
 
+#elif defined(_3DS)
+
 #else
 
 	#include <pspgu.h>
@@ -48,7 +50,7 @@ public:
 	JMusic();
 	~JMusic();
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	FSOUND_SAMPLE *mTrack;		// MP3 needed to be of "sample" type for FMOD, FMUSIC_MODULE is for MODs
 #else
 	JCooleyesMP3* mTrack;
@@ -70,7 +72,7 @@ public:
 	int mVolume;
 	int mPanning;
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 	FSOUND_SAMPLE *mSample;
 #else
 	//WAVDATA *mSample;
@@ -194,7 +196,7 @@ protected:
 
 private:
 	
-#ifdef WIN32
+#if defined(WIN32) || defined(_3DS)
 
 	JMusic *mCurrentMusic;
 

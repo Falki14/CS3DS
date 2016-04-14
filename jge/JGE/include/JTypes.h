@@ -13,6 +13,8 @@
 
 #ifdef WIN32
 
+#elif defined(_3DS)
+
 #else
 
 #include <pspgu.h>
@@ -126,6 +128,50 @@
 
 
 	#define PIXEL_TYPE				DWORD
+
+#elif defined(_3DS)
+
+    #include <3ds/types.h>
+    #include <GL/gl.h>
+
+    #include "../Dependencies/include/fmod.h"
+
+    #define BLEND_ZERO					GL_ZERO
+    #define BLEND_ONE					GL_ONE
+    #define BLEND_SRC_COLOR				GL_SRC_COLOR
+    #define BLEND_ONE_MINUS_SRC_COLOR	GL_ONE_MINUS_SRC_COLOR
+    #define BLEND_SRC_ALPHA				GL_SRC_ALPHA
+    #define BLEND_ONE_MINUS_SRC_ALPHA	GL_ONE_MINUS_SRC_ALPHA
+    #define BLEND_DST_ALPHA				GL_DST_ALPHA
+    #define BLEND_ONE_MINUS_DST_ALPHA	GL_ONE_MINUS_DST_ALPHA
+    #define BLEND_DST_COLOR				GL_DST_COLOR
+    #define BLEND_ONE_MINUS_DST_COLOR	GL_ONE_MINUS_DST_COLOR
+    #define BLEND_SRC_ALPHA_SATURATE	GL_SRC_ALPHA_SATURATE
+
+    #define ARGB(a, r, g, b)		((a << 24) | (r << 16) | (g << 8) | b)
+    #define RGBA(r, g, b, a)		((a << 24) | (b << 16) | (g << 8) | r)
+
+    enum PspCtrlButtons
+    {
+        PSP_CTRL_SELECT     = 0x000001,
+        PSP_CTRL_START      = 0x000008,
+        PSP_CTRL_UP         = 0x000010,
+        PSP_CTRL_RIGHT      = 0x000020,
+        PSP_CTRL_DOWN      	= 0x000040,
+        PSP_CTRL_LEFT      	= 0x000080,
+        PSP_CTRL_LTRIGGER   = 0x000100,
+        PSP_CTRL_RTRIGGER   = 0x000200,
+        PSP_CTRL_TRIANGLE   = 0x001000,
+        PSP_CTRL_CIRCLE     = 0x002000,
+        PSP_CTRL_CROSS      = 0x004000,
+        PSP_CTRL_SQUARE     = 0x008000,
+        PSP_CTRL_HOME       = 0x010000,
+        PSP_CTRL_HOLD       = 0x020000,
+        PSP_CTRL_NOTE       = 0x800000,
+    };
+
+    #define DWORD                   u32
+    #define PIXEL_TYPE				DWORD
 
 #else	// PSP
 
