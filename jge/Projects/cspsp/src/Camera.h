@@ -42,7 +42,7 @@ public:
 	float mRecoilTime;
 	float mRecoilTimeTotal;
 
-	Camera(float x, float y, float minx = 0, float miny = 0, float maxx = 480, float maxy = 272);
+	Camera(float x, float y, float minx = 0, float miny = 0, float maxx = 400, float maxy = 240);
 	~Camera();
 
 	void Update(float dt);

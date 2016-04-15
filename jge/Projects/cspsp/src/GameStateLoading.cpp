@@ -14,7 +14,7 @@ void GameStateLoading::Start()
 	mRenderer->EnableVSync(true);
 
 	JTexture* bgTexture = mRenderer->LoadTexture("gfx/bg.PNG");					// load bg
-	gBgQuad = new JQuad(bgTexture, 0.0f, 0.0f, 480.0f, 272.0f);
+	gBgQuad = new JQuad(bgTexture, 0.0f, 0.0f, 400.0f, 240.0f);
 	JTexture* logoTexture = mRenderer->LoadTexture("gfx/logo.png");				// load logo
 	gLogoQuad = new JQuad(logoTexture, 0.0f, 0.0f, 256.0f, 128.0f);
 }

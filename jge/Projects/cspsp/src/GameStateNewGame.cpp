@@ -15,7 +15,7 @@ GameStateNewGame::~GameStateNewGame()
 
 void GameStateNewGame::Create()
 {
-	mMapsListBox = new ListBox(0,65,SCREEN_WIDTH,175,25,7);
+	mMapsListBox = new ListBox(0,65,SCREEN_WIDTH,150,25,6);
 
 	strcpy(mSearchString,"");
 	mMatch = true;

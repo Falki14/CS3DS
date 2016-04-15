@@ -21,7 +21,7 @@
 #define OPTIONS 0
 #define CONTROLS 1
 
-#define NUMCONFIGS 7
+#define NUMCONFIGS 6
 
 #define RELATIVE1 0
 #define ABSOLUTE1 1

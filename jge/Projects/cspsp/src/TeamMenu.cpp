@@ -49,9 +49,9 @@ TeamMenu::TeamMenu()
 
 	mIsOldStyle = true;
 
-	FormatText(mTeamLines,"Eliminate the other team. The first team to kill all of the other players on the other team wins.",150,0.6f);
-	FormatText(mCTFLines,"Capture the enemy flag while defending your own. The team with the most captures by the end of the round wins.",150,0.6f);
-	FormatText(mFFALines,"Eliminate everyone else. The player with the most kills by the end of the round wins.\n\nTeam selection only matters for your appearance and weapons.",150,0.6f);
+	FormatText(mTeamLines,"Eliminate the other team. The first team to kill all of the other players on the other team wins.",130,0.7f);
+	FormatText(mCTFLines,"Capture the enemy flag while defending your own. The team with the most captures by the end of the round wins.",130,0.7f);
+	FormatText(mFFALines,"Eliminate everyone else. The player with the most kills by the end of the round wins.\n\nTeam selection only matters for your appearance and weapons.",130,0.7f);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -137,48 +137,48 @@ void TeamMenu::Update(float dt)
 void TeamMenu::Render()
 {	
 	if (!mIsActive) return;
-	mRenderer->FillRect(300,25,SCREEN_WIDTH-300-10,SCREEN_HEIGHT-40,ARGB(200,45,50,50));
-	mRenderer->DrawRect(300,25,SCREEN_WIDTH-300-10,SCREEN_HEIGHT-40,ARGB(255,255,255,255));
+	mRenderer->FillRect(300-70,25,SCREEN_WIDTH-300-10+65,SCREEN_HEIGHT-40,ARGB(200,45,50,50));
+	mRenderer->DrawRect(300-70,25,SCREEN_WIDTH-300-10+65,SCREEN_HEIGHT-40,ARGB(255,255,255,255));
 	//mRenderer->FillCircle(SCREEN_WIDTH_2,SCREEN_HEIGHT_2,SCREEN_HEIGHT_2,ARGB(200,50,50,50));
 	gFont->SetColor(ARGB(255,255,255,255));
 	gFont->SetScale(1.0f);
-	gFont->DrawString("Team Select", 310, 40);
+	gFont->DrawString("Team Select", 310-70, 40);
 	gFont->SetScale(0.75f);
 
 	if (!mIsOldStyle) {
-		gFont->DrawString("[ANALOG+X] Select",320,70);
+		gFont->DrawString("[ANALOG+A] Select",320-70,70);
 	}
 	else {
-		gFont->DrawString("[DIR PAD+X] Select",320,70);
+		gFont->DrawString("[DIR PAD+A] Select",320-70,70);
 	}
-	gFont->DrawString("[O] Cancel",320,90);
+	gFont->DrawString("[B] Cancel",320-70,90);
 	if (mCategoryIndex != MAIN1) {
-		gFont->DrawString("[^] Return",320,110);
+		gFont->DrawString("[^] Return",320-70,110);
 	}
 
 	if (mCategoryIndex == MAIN1) {
 		if (*mGameType == TEAM) {
 			gFont->SetScale(0.75f);
-			gFont->DrawString("Team Deathmatch",310,140);
+			gFont->DrawString("Team Deathmatch",310-70,140);
 			gFont->SetScale(0.6f);
 			for (int i=0; i<mTeamLines.size(); i++) {
-				gFont->DrawString(mTeamLines[i],315,160+10*i);
+				gFont->DrawString(mTeamLines[i],315-70,160+10*i);
 			}
 		}
 		else if (*mGameType == FFA) {
 			gFont->SetScale(0.75f);
-			gFont->DrawString("Free for All",310,140);
+			gFont->DrawString("Free for All",310-70,140);
 			gFont->SetScale(0.6f);
 			for (int i=0; i<mFFALines.size(); i++) {
-				gFont->DrawString(mFFALines[i],315,160+10*i);
+				gFont->DrawString(mFFALines[i],315-70,160+10*i);
 			}
 		}
 		else if (*mGameType == CTF) {
 			gFont->SetScale(0.75f);
-			gFont->DrawString("Capture the Flag",310,140);
+			gFont->DrawString("Capture the Flag",310-70,140);
 			gFont->SetScale(0.6f);
 			for (int i=0; i<mCTFLines.size(); i++) {
-				gFont->DrawString(mCTFLines[i],315,160+10*i);
+				gFont->DrawString(mCTFLines[i],315-70,160+10*i);
 			}
 		}
 	}
@@ -191,8 +191,8 @@ void TeamMenu::Render()
 	float step = 1.0f/size*(2*M_PI);
 	for (int i=0; i<size; i++) {
 		//float theta = (float)i/size*(2*M_PI);
-		float x = 140+75*cosf(theta);
-		float y = SCREEN_HEIGHT_2+75*sinf(theta);
+		float x = 115+60*cosf(theta);
+		float y = SCREEN_HEIGHT_2+60*sinf(theta);
 		if (mIsOldStyle) {
 			x = 50;
 			y = 25+32*i;

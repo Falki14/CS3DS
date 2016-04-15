@@ -470,7 +470,7 @@ int JTTFont::RenderString(const u16 *text, float x, float y, bool render)
 
 	JRenderer* renderer = JRenderer::GetInstance();
 	renderer->BindTexture(mTexture);
-
+    renderer->RenderBeginQuads();
 	u16 ch;
 	int index;
 
@@ -482,12 +482,12 @@ int JTTFont::RenderString(const u16 *text, float x, float y, bool render)
 			if (render)
 			{
 				mQuads[index]->SetColor(mColor);
-				renderer->RenderQuad(mQuads[index], x, y);
+				renderer->RenderAddQuad(mQuads[index], x, y);
 			}
 			x += mXAdvance[index];
 		}
 	}
-
+    renderer->RenderEnd();
 	return (int)x;
 }
 
@@ -496,7 +496,7 @@ int JTTFont::RenderString(const char *text, float x, float y, bool render)
 {
 	JRenderer* renderer = JRenderer::GetInstance();
 	renderer->BindTexture(mTexture);
-
+    renderer->RenderBeginQuads();
 	const u8* str = (const u8*) text;
 	u8 ch;
 	int index;
@@ -509,7 +509,7 @@ int JTTFont::RenderString(const char *text, float x, float y, bool render)
 			if (render)
 			{
 				mQuads[index]->SetColor(mColor);
-				renderer->RenderQuad(mQuads[index], x, y);
+				renderer->RenderAddQuad(mQuads[index], x, y);
 			}
 			x += mXAdvance[index];
 		}
@@ -525,13 +525,13 @@ int JTTFont::RenderString(const char *text, float x, float y, bool render)
 				if (render)
 				{
 					mQuads[index]->SetColor(mColor);
-					renderer->RenderQuad(mQuads[index], x, y);
+					renderer->RenderAddQuad(mQuads[index], x, y);
 				}
 				x += mXAdvance[index];
 			}
 		}
 	}
-
+    renderer->RenderEnd();
 	return (int)x;
 }
 
@@ -543,7 +543,7 @@ int JTTFont::RenderString(const u8 *text, float x, float y, bool render)
 
 	u8 ch;
 	int index;
-
+    renderer->RenderBeginQuads();
 	while ((ch=*text)!=0)
 	{
 		if (ch < 0x80)
@@ -571,12 +571,12 @@ int JTTFont::RenderString(const u8 *text, float x, float y, bool render)
 			if (render)
 			{
 				mQuads[index]->SetColor(mColor);
-				renderer->RenderQuad(mQuads[index], x, y);
+				renderer->RenderAddQuad(mQuads[index], x, y);
 			}
 			x += mXAdvance[index];
 		}
 	}
-
+    renderer->RenderEnd();
 	return (int)x;
 }
 

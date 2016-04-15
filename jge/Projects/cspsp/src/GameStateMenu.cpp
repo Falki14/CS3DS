@@ -18,11 +18,11 @@ void GameStateMenu::Create()
 	//mGuiController->SetShadingBackground(10, 45, 80, 100, ARGB(255,0,0,0));
 	if (mGuiController)
 	{
-		mGuiController->Add(new MenuItem(1, gFont, "singleplayer", SCREEN_WIDTH-20, 130, TYPE_MAIN, JGETEXT_RIGHT, true));
-		mGuiController->Add(new MenuItem(2, gFont, "multiplayer", SCREEN_WIDTH-20, 155, TYPE_MAIN, JGETEXT_RIGHT));
-		mGuiController->Add(new MenuItem(3, gFont, "settings", SCREEN_WIDTH-20, 180, TYPE_MAIN, JGETEXT_RIGHT));
-		mGuiController->Add(new MenuItem(4, gFont, "credits", SCREEN_WIDTH-20, 205, TYPE_MAIN, JGETEXT_RIGHT));
-		mGuiController->Add(new MenuItem(5, gFont, "quit", SCREEN_WIDTH-20, 230, TYPE_MAIN, JGETEXT_RIGHT));
+		mGuiController->Add(new MenuItem(1, gFont, "singleplayer", SCREEN_WIDTH-20, 100, TYPE_MAIN, JGETEXT_RIGHT, true));
+		mGuiController->Add(new MenuItem(2, gFont, "multiplayer", SCREEN_WIDTH-20, 125, TYPE_MAIN, JGETEXT_RIGHT));
+		mGuiController->Add(new MenuItem(3, gFont, "settings", SCREEN_WIDTH-20, 150, TYPE_MAIN, JGETEXT_RIGHT));
+		mGuiController->Add(new MenuItem(4, gFont, "credits", SCREEN_WIDTH-20, 175, TYPE_MAIN, JGETEXT_RIGHT));
+		mGuiController->Add(new MenuItem(5, gFont, "quit", SCREEN_WIDTH-20, 200, TYPE_MAIN, JGETEXT_RIGHT));
 	}
 }
 
@@ -125,9 +125,9 @@ void GameStateMenu::Render()
 	if (mStage == STAGE_MENU)
 	{
 		mRenderer->RenderQuad(gLogoQuad, 0.0f, 0.0f);
-		mRenderer->FillRect(0,128,SCREEN_WIDTH,125,ARGB(100,0,0,0));
+		mRenderer->FillRect(0,98,SCREEN_WIDTH,125,ARGB(100,0,0,0));
 		int i = mGuiController->GetCurr();
-		mRenderer->FillRect(0,128+i*25,SCREEN_WIDTH,25,ARGB(255,0,0,0));
+		mRenderer->FillRect(0,98+i*25,SCREEN_WIDTH,25,ARGB(255,0,0,0));
 		mGuiController->Render();
 
 		gFont->SetScale(0.75f);
@@ -149,7 +149,7 @@ void GameStateMenu::Render()
 		else if (i == 4) {
 			strcpy(info,"Quit the game ):");
 		}
-		gFont->DrawString(info,10+mInfoX,133+i*25);
+		gFont->DrawString(info,10+mInfoX,103+i*25);
 
 		gFont->SetColor(ARGB(255,255,255,255));
 		gFont->DrawShadowedString("Official Website: http://cspsp.appspot.com", 5, SCREEN_HEIGHT-15);

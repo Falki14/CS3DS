@@ -40,11 +40,7 @@ static int GetTickCount()
 //#include "..\src\GameApp.h"
 
 bool	active=true;			// Window Active Flag Set To TRUE By Default
-bool	fullscreen=false;		// Windowed Mode By Default
-
 DWORD	lastTickCount;
-
-BOOL	g_keys[256];
 
 //------------------------------------------------------------------------
 
@@ -61,7 +57,7 @@ static u32 gOldButtons = 0;
 static circlePosition mCirclePos;
 
 u8 JGEGetAnalogX() {
-    if (mCirclePos.dx < -128) mCirclePos.dx = -128;
+    if (mCirclePos.dx < -127) mCirclePos.dx = -127;
     if (mCirclePos.dx > 127) mCirclePos.dx = 127;
     return (u8)(mCirclePos.dx + 128);
 }
@@ -251,14 +247,7 @@ GLvoid KillGLWindow(GLvoid)								// Properly Kill The Window
     gfxDestroyDevice(GfxHandle);
 }
 
-/*	This Code Creates Our OpenGL Window.  Parameters Are:					*
- *	title			- Title To Appear At The Top Of The Window				*
- *	width			- Width Of The GL Window Or Fullscreen Mode				*
- *	height			- Height Of The GL Window Or Fullscreen Mode			*
- *	bits			- Number Of Bits To Use For Color (8/16/24/32)			*
- *	fullscreenflag	- Use Fullscreen Mode (TRUE) Or Windowed Mode (FALSE)	*/
-
-bool CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
+bool CreateGLWindow(char* title, int width, int height, int bits)
 {
     void *GfxHandle = gfxCreateDevice(240, 400, 0);
     gfxMakeCurrent(GfxHandle);
@@ -278,7 +267,6 @@ bool CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 
     return true;
 }
-//ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));
 
 int main(int argc, char **argv) {
     gfxInitDefault();
@@ -297,7 +285,7 @@ int main(int argc, char **argv) {
         JRenderer::Set3DFlag(true);
 
     // Create Our OpenGL Window
-    if (!CreateGLWindow(g_launcher->GetName(),SCREEN_WIDTH,SCREEN_HEIGHT,32,fullscreen))
+    if (!CreateGLWindow(g_launcher->GetName(),SCREEN_WIDTH,SCREEN_HEIGHT,32))
     {
         return 0;									// Quit If Window Was Not Created
     }

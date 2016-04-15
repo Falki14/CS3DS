@@ -1894,7 +1894,7 @@ void Game::Render()
 		//mRenderer->DrawLine(5,40,75,40,ARGB(175,153,153,153));
 		//mRenderer->DrawLine(40,5,40,75,ARGB(175,153,153,153));
 
-		float factor = 32/480.0f;
+		float factor = 32/400.0f;
 
 		if (mMap->mOverviewQuad != NULL) {
 			float x = dx*factor-31;
@@ -2087,8 +2087,8 @@ void Game::Render()
 
 		gFont->SetScale(0.9f);
 		if (mSpecState != NONE) {
-			mRenderer->FillRect(0, 0, 480, 35, ARGB(200,0,0,0));
-			mRenderer->FillRect(0, SCREEN_HEIGHT-35, 480, 35, ARGB(200,0,0,0));
+			mRenderer->FillRect(0, 0, 400, 35, ARGB(200,0,0,0));
+			mRenderer->FillRect(0, SCREEN_HEIGHT-35, 400, 35, ARGB(200,0,0,0));
 			//mRenderer->DrawLine(0,35,SCREEN_WIDTH,35,ARGB(255,255,255,255));
 			//mRenderer->DrawLine(0,SCREEN_HEIGHT-35,SCREEN_WIDTH,SCREEN_HEIGHT-35,ARGB(255,255,255,255));
 				

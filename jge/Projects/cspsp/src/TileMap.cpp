@@ -450,8 +450,8 @@ bool TileMap::Load(char *mapFile, Gun guns[], int gameType)
 	fclose(file);
 
 
-	mOverviewWidth = (int)(mCols*32*32.0f/480.0f);
-	mOverviewHeight = (int)(mRows*32*32.0f/480.0f);
+	mOverviewWidth = (int)(mCols*32*32.0f/400.0f);
+	mOverviewHeight = (int)(mRows*32*32.0f/400.0f);
 
 	for (unsigned int i=0; i<mCollisionPoints.size()-1; i++) {
 		if (mCollisionPoints[i].x == -1 || mCollisionPoints[i+1].x == -1) continue;
@@ -508,6 +508,22 @@ bool TileMap::Load(char *mapFile, Gun guns[], int gameType)
 			}
 		}
 	}*/
+
+    if (displayList == 0) {
+        displayList = glGenLists(1);
+        glNewList(displayList, GL_COMPILE);
+        mRenderer->BindTexture(mTiles[0]->mTex);
+        mRenderer->RenderBeginQuads();
+        for (int i = 0; i < mRows; ++i) {
+            for (int j = 0; j < mCols; ++j) {
+                int n = gMap[j + i * mCols];
+                if (n >= 0) mRenderer->RenderAddQuad(mTiles[n],j * 32, i * 32);
+            }
+        }
+        mRenderer->RenderEnd();
+        glEndList();
+    }
+    
 	loaded = true;
 
 	return true;
@@ -561,6 +577,8 @@ void TileMap::Unload()
 		SAFE_DELETE(mOverviewQuad);
 
 		mBackgroundTile = -1;
+        glDeleteLists(displayList, 1);
+        displayList = 0;
 		loaded = false;
 	}
 }
@@ -581,44 +599,10 @@ void TileMap::Render(float x, float y)
 	int mapX = (int)(x-SCREEN_WIDTH_2+0.5f);
 	int mapY = (int)(y-SCREEN_HEIGHT_2+0.5f);
 
-
-	int col = mapX/32;
-	int xoffset = -(mapX%32);
-	int row = mapY/32-1;
-	int yy = -(mapY%32)-32;
-
-	int start = mCols * row + col;
-	
-	int xx;
-	int currCol;
-	int n, index;
-	while (yy < SCREEN_HEIGHT_F)// && row < mRows)
-	{
-		xx = xoffset-32;
-		currCol = col-1;
-		index = start;
-		while (xx < SCREEN_WIDTH_F)// && currCol< mCols)
-		{
-			if (currCol < 0 || row < 0 || row >= mRows || currCol >= mCols) {
-				n = mBackgroundTile;
-			}
-			else {
-				n = (int)gMap[currCol+row*mCols];
-			}
-			if (n >= 0)
-			{
-				mRenderer->RenderQuad(mTiles[n],xx,yy);
-			}
-			xx += 32;
-			currCol++;
-			
-		}
-
-		yy += 32;
-		start += mCols;
-		row++;
-	}
-
+    glPushMatrix();
+    glTranslatef(-mapX, mapY, 0);
+    glCallList(displayList);
+    glPopMatrix();
 	float offsetX = (x-SCREEN_WIDTH_2);
 	float offsetY = (y-SCREEN_HEIGHT_2);
 	
@@ -629,7 +613,6 @@ void TileMap::Render(float x, float y)
 		mRenderer->RenderQuad(mDecals[i].quad,mDecals[i].x-offsetX,mDecals[i].y-offsetY,mDecals[i].angle,mDecals[i].scale,mDecals[i].scale);
 	}
 
-	
 }
 
 //------------------------------------------------------------------------------------------------

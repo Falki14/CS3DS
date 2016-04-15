@@ -278,10 +278,7 @@ void GameStateOptions::Update(float dt)
 				if (mEngine->GetButtonState(PSP_CTRL_UP) || mEngine->GetAnalogY()<64) {
 					if (KeyRepeated(PSP_CTRL_UP,dt)) {
 						index--;
-						if (index == SAVE-1) {
-							index--;
-						}
-						else if (index < 0) {
+						if (index < 0) {
 							index = NUMCONFIGS-1;
 						}
 					}
@@ -289,10 +286,7 @@ void GameStateOptions::Update(float dt)
 				else if (mEngine->GetButtonState(PSP_CTRL_DOWN) || mEngine->GetAnalogY()>192) {
 					if (KeyRepeated(PSP_CTRL_DOWN,dt)) {
 						index++;
-						if (index == SAVE-1) {
-							index++;
-						}
-						else if (index > NUMCONFIGS-1) {
+						if (index > NUMCONFIGS-1) {
 							index = 0;
 						}
 					}
@@ -469,7 +463,7 @@ void GameStateOptions::Render()
 			if (index == i) {
 				gFont->SetColor(ARGB(255,255,255,255));
 				gFont->SetScale(0.75f);
-				gFont->DrawShadowedString(mConfigInfo[i],10.0f+mInfoX,35+175+10);
+				gFont->DrawShadowedString(mConfigInfo[i],10.0f+mInfoX,10+175+10);
 				gFont->SetScale(1.0f);
 				gFont->SetColor(ARGB(255,0,128,255));
 			}
@@ -513,7 +507,7 @@ void GameStateOptions::Render()
 
 		mRenderer->FillRect(155-62,5,125,25,ARGB(175,0,0,0));
 		mRenderer->FillRect(325-62,5,125,25,ARGB(100,0,0,0));
-		mRenderer->RenderQuad(mControlsQuad, 0.0f, 0.0f);
+		mRenderer->RenderQuad(mControlsQuad, 0.0f, 0.0f, 0.0f, 400.0f/480.0f, 240.0f/272.0f);
 
 
 		gFont->SetColor(ARGB(255,255,255,255));

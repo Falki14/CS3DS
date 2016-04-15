@@ -382,6 +382,66 @@ void JRenderer::RenderQuad(JQuad* quad, VertexColor* pt)
     glColor4ub(255, 255, 255, 255);
 }
 
+void JRenderer::RenderBeginQuads() {
+    glPushMatrix();
+    glBegin(GL_QUADS);
+}
+
+void JRenderer::RenderAddQuad(JQuad *quad, float xo, float yo) {
+    //yo = SCREEN_HEIGHT-yo-1;//-(quad->mHeight);
+    float width = quad->mWidth;
+    float height = quad->mHeight;
+    float x = -quad->mHotSpotX;
+    float y = quad->mHotSpotY;
+
+    yo = SCREEN_HEIGHT_F - yo;
+
+    Vector2D pt[4];
+    pt[3] = Vector2D(x + xo, y + yo);
+    pt[2] = Vector2D(x+width + xo, y + yo);
+    pt[1] = Vector2D(x+width + xo, y-height + yo);
+    pt[0] = Vector2D(x + xo, y-height + yo);
+
+    Vector2D uv[4];
+    uv[0] = Vector2D(quad->mTX0, quad->mTY1);
+    uv[1] = Vector2D(quad->mTX1, quad->mTY1);
+    uv[2] = Vector2D(quad->mTX1, quad->mTY0);
+    uv[3] = Vector2D(quad->mTX0, quad->mTY0);
+
+    if (quad->mHFlipped)
+    {
+        Swap(&uv[0].x, &uv[1].x);
+        Swap(&uv[2].x, &uv[3].x);
+    }
+
+    if (quad->mVFlipped)
+    {
+        Swap(&uv[0].y, &uv[2].y);
+        Swap(&uv[1].y, &uv[3].y);
+    }
+    // bottom left corner
+    glColor4ub(quad->mColor[0].r, quad->mColor[0].g, quad->mColor[0].b, quad->mColor[0].a);
+    glTexCoord2f(uv[0].x, uv[0].y); glVertex2f(pt[0].x, pt[0].y);
+
+    // bottom right corner
+    glColor4ub(quad->mColor[1].r, quad->mColor[1].g, quad->mColor[1].b, quad->mColor[1].a);
+    glTexCoord2f(uv[1].x, uv[1].y); glVertex2f(pt[1].x, pt[1].y);
+
+    // top right corner
+    glColor4ub(quad->mColor[2].r, quad->mColor[2].g, quad->mColor[2].b, quad->mColor[2].a);
+    glTexCoord2f(uv[2].x, uv[2].y); glVertex2f(pt[2].x, pt[2].y);
+
+    // top left corner
+    glColor4ub(quad->mColor[3].r, quad->mColor[3].g, quad->mColor[3].b, quad->mColor[3].a);
+    glTexCoord2f(uv[3].x, uv[3].y); glVertex2f(pt[3].x, pt[3].y);
+
+}
+
+void JRenderer::RenderEnd() {
+    glColor4ub(255, 255, 255, 255);
+    glEnd();
+}
+
 
 void JRenderer::FillRect(float x, float y, float width, float height, PIXEL_TYPE color)
 {
@@ -423,21 +483,21 @@ void JRenderer::DrawRect(float x, float y, float width, float height, PIXEL_TYPE
 
     glDisable(GL_TEXTURE_2D);
     glColor4ub(col.r, col.g, col.b, col.a);
-    glBegin(GL_LINES);
-
-    glVertex2f(x, y);
-    glVertex2f(x, y+height);
-
-    glVertex2f(x, y+height);
-    glVertex2f(x+width, y+height);
-
-    glVertex2f(x+width, y+height);
-    glVertex2f(x+width, y);
-
-    glVertex2f(x+width, y);
-    glVertex2f(x, y);
-
-    glEnd();
+//    glBegin(GL_LINES);
+//
+//    glVertex2f(x, y);
+//    glVertex2f(x, y+height);
+//
+//    glVertex2f(x, y+height);
+//    glVertex2f(x+width, y+height);
+//
+//    glVertex2f(x+width, y+height);
+//    glVertex2f(x+width, y);
+//
+//    glVertex2f(x+width, y);
+//    glVertex2f(x, y);
+//
+//    glEnd();
 
     glEnable(GL_TEXTURE_2D);
 
@@ -496,10 +556,10 @@ void JRenderer::DrawLine(float x1, float y1, float x2, float y2, PIXEL_TYPE colo
     JColor col;
     col.color = color;
     glColor4ub(col.r, col.g, col.b, col.a);
-    glBegin(GL_LINES);
-    glVertex2f(x1, SCREEN_HEIGHT_F-y1);
-    glVertex2f(x2, SCREEN_HEIGHT_F-y2);
-    glEnd();
+//    glBegin(GL_LINES);
+//    glVertex2f(x1, SCREEN_HEIGHT_F-y1);
+//    glVertex2f(x2, SCREEN_HEIGHT_F-y2);
+//    glEnd();
     glEnable(GL_TEXTURE_2D);
     glColor4ub(255, 255, 255, 255);
 }

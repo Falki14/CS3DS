@@ -52,12 +52,12 @@
 #define SAFE_DELETE_ARRAY(x)	if (x) { delete [] x; x = NULL; }
 
 
-#define SCREEN_WIDTH 			480
-#define SCREEN_HEIGHT 			272
-#define SCREEN_WIDTH_F 			480.0f
-#define SCREEN_HEIGHT_F			272.0f
-#define SCREEN_WIDTH_2			240.0f
-#define SCREEN_HEIGHT_2			136.0f
+#define SCREEN_WIDTH 			400
+#define SCREEN_HEIGHT 			240
+#define SCREEN_WIDTH_F 			400.0f
+#define SCREEN_HEIGHT_F			240.0f
+#define SCREEN_WIDTH_2			200.0f
+#define SCREEN_HEIGHT_2			120.0f
 
 #ifdef WIN32
 //	#define DEFAULT_BLEND		BLEND_DEFAULT
