@@ -51,7 +51,6 @@ class TileMap
 {
 private:
 	static JRenderer* mRenderer;
-    GLuint displayList = 0;
 	std::vector<JQuad*> mTiles;
 	std::vector<int> gMap;
 	JTexture *mTexture;

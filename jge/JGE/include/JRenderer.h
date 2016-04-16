@@ -97,9 +97,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	void RenderQuad(JQuad* quad, float xo, float yo, float angle=0.0f, float xScale=1.0f, float yScale=1.0f);
 
-    void RenderBeginQuads();
-    void RenderAddQuad(JQuad *quad, float xo, float yo);
-    void RenderEnd();
 
 	//////////////////////////////////////////////////////////////////////////
 	/// Render a textured quad with new texture mapping information.
