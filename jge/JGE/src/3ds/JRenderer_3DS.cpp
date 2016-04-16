@@ -196,7 +196,7 @@ void JRenderer::BeginScene()
 
 void JRenderer::EndScene()
 {
-//    glFlush ();
+    glFinish ();
 }
 
 void JRenderer::BindTexture(JTexture *tex)
