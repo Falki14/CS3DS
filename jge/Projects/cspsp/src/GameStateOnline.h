@@ -132,6 +132,7 @@ public:
 	void End();
 	void Update(float dt);
 	void Render();
+    void RenderBottom();
 
 	void ButtonPressed(int controllerId, int controlId);
 

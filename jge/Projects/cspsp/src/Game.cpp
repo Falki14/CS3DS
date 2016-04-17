@@ -1705,372 +1705,7 @@ void Game::Render()
 	#else
 	snprintf(buffer,32,"%i",mPlayer->mHealth); 
 	#endif**/
-	if (mPlayer->mState != DEAD) {
-		sprintf(buffer,"%i",mPlayer->mHealth); 
-		//gHudFont->SetColor(ARGB(230,255,200,0));
-		//gHudFont->SetScale(2.0f);
-		//gHudFont->DrawString(buffer, 10.0f, SCREEN_HEIGHT_F-40.0f, JGETEXT_LEFT);
-		
-		int height = 44*(mPlayer->mHealth/100.0f);
-		if (height < 1) height = 1;
-		gHealthFillQuad->SetTextureRect(48,44-height+2,48,height);
-		mRenderer->RenderQuad(gHealthBorderQuad,10,SCREEN_HEIGHT-58);
-		mRenderer->RenderQuad(gHealthFillQuad,10,SCREEN_HEIGHT-58+44-height+2);
-
-		gFont->SetColor(ARGB(255,255,255,255));
-		gFont->SetScale(0.7f);
-		gFont->DrawShadowedString(buffer, 10+((mPlayer->mHealth == 100)?22:24), SCREEN_HEIGHT_F-40.0f, JGETEXT_CENTER);
-
-		//gHudFont->SetScale(1.5f);
-
-		gFont->SetScale(1.0f);
-		gFont->SetColor(ARGB(230,255,64,64));
-
-		int seconds = (int)floorf(mRoundTimer);
-		int minutes = (int)floorf(seconds/60.0f);
-		int centiseconds = (int)floorf((mRoundTimer-seconds)*100);
-		sprintf(buffer,"%02d:%02d.%02d",minutes,seconds%60,centiseconds);
-
-		//gHudFont->SetColor(ARGB(230,255,64,64));
-		//gHudFont->DrawString(buffer, SCREEN_WIDTH_2, SCREEN_HEIGHT-30, JGETEXT_CENTER);
-
-		gFont->DrawShadowedString(buffer, SCREEN_WIDTH_2, SCREEN_HEIGHT-25, JGETEXT_CENTER);
-
-		/*if (mPlayer->GetCurrentGun() != NULL) {
-			gHudFont->SetColor(ARGB(230,255,200,0));
-			if (mPlayer->mGunIndex == KNIFE) {
-			}
-			else if (mPlayer->mGunIndex == GRENADE) {
-				sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mClipAmmo); 
-				gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
-			}
-			else {
-				sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mClipAmmo); 
-				gHudFont->DrawString(buffer, SCREEN_WIDTH-80, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
-
-				gHudFont->DrawString("|", SCREEN_WIDTH-70, SCREEN_HEIGHT-30, JGETEXT_CENTER);
-
-				sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mRemainingAmmo); 
-				gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
-			}
-		}
-	
-		gHudFont->SetColor(ARGB(230,0,255,0));
-		sprintf(buffer,"$%i",mPlayer->mMoney); 
-		gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-60, JGETEXT_RIGHT);*/
-
-		mRenderer->RenderQuad(gAmmoBarQuad,SCREEN_WIDTH-10,SCREEN_HEIGHT-10);
-		//mRenderer->FillRect(SCREEN_WIDTH-(10+40+4),SCREEN_HEIGHT-(10+64+3*32),38,3*32,ARGB(150,100,100,100));
-		int index = mPlayer->mGunIndex;
-		if (mPlayer->mGuns[index] != NULL) {
-			JQuad* quad = mPlayer->mGuns[index]->mGun->mGroundQuad;
-			mRenderer->RenderQuad(quad,SCREEN_WIDTH-(22+10),SCREEN_HEIGHT-(22+10+20),0.0f,1.4f,1.4f);
-		}
-		int y = 0;
-		for (int i=0; i<4; i++) {
-			index++;
-			if (index >= 5) {
-				index = 0;
-			}
-			//mRenderer->FillRect(80+i*37,5,32,32,ARGB(100,255,200,0));
-			if (mPlayer->mGuns[index] != NULL) {
-				
-				//mRenderer->FillRect(80+i*37,37,32,32,ARGB(150,255,200,0));
-				int alpha = 255-25*y;
-				float scale = 1.0f;
-				/*PIXEL_TYPE colors[] =
-				{
-					ARGB(200,200,200,200),
-					ARGB(200,200,200,200),
-					ARGB(200,100,100,100),
-					ARGB(200,100,100,100)
-				};*/
-				mRenderer->FillRect(SCREEN_WIDTH-(22+10+18),SCREEN_HEIGHT-(64+10+20+20*y),36,19,ARGB(200,100,100,100));
-				JQuad* quad = mPlayer->mGuns[index]->mGun->mGroundQuad;
-				//quad->SetColor(ARGB(alpha,255,255,255));
-				mRenderer->RenderQuad(quad,SCREEN_WIDTH-(22+10),SCREEN_HEIGHT-(64+10+10+20*y));
-				//quad->SetColor(ARGB(255,255,255,255));
-				y++;
-			}
-		}
-		GunObject *currentGun = mPlayer->GetCurrentGun();
-		if (currentGun != NULL) {
-			if (mPlayer->mState == ATTACKING || mPlayer->mState == SWITCHING) {
-				mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,50,50,50));
-				float width = 40.0f;
-				float delay = currentGun->mGun->mDelay;
-				if (mPlayer->mState == SWITCHING) {
-					delay *= 0.75f;
-					if (delay < 150.0f) delay = 150.0f;
-				}
-				if (delay > EPSILON) {
-					width *= mPlayer->mStateTime/delay;
-				}
-				mRenderer->FillRect(SCREEN_WIDTH-(44+10)-width+40,SCREEN_HEIGHT-(8+10+20),width,4,ARGB(255,150,150,150));
-			}
-			else if (mPlayer->mState == RELOADING) {
-				mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,50,50,50));
-			}
-			else {
-				mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,150,150,150));
-			}
-
-			gFont->SetColor(ARGB(255,255,255,255));
-			gFont->SetScale(0.7f);
-			if (mPlayer->mGunIndex == KNIFE) {
-				//mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
-				mRenderer->FillRect(SCREEN_WIDTH-14-120,SCREEN_HEIGHT-29,120,15,ARGB(255,255,255,255));
-				gFont->DrawShadowedString("-", SCREEN_WIDTH-14-50, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
-				gFont->DrawShadowedString("-|", SCREEN_WIDTH-14-50-25, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
-			}
-			else {
-				if (mPlayer->mState == RELOADING) {
-					float width = 120.0f;
-					if (currentGun->mGun->mReloadDelay > EPSILON) {
-						width *= mPlayer->mStateTime/(currentGun->mGun->mReloadDelay);
-					}
-					mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
-					mRenderer->FillRect(SCREEN_WIDTH-14-width,SCREEN_HEIGHT-29,width,15,ARGB(255,255,255,255));
-					gFont->DrawShadowedString("reloading", SCREEN_WIDTH-10-64,SCREEN_HEIGHT-28,JGETEXT_CENTER);
-				}
-				else {
-					int clip = currentGun->mGun->mClip;
-					int w = currentGun->mGun->mAmmoBarWidth;
-
-					if (w != 0) {
-						for (int i=1; i<=clip; i++) {
-							DWORD color = ARGB(255,50,50,50);
-							if (i <= currentGun->mClipAmmo) {
-								color = ARGB(255,255,255,255);
-							}
-							mRenderer->FillRect(SCREEN_WIDTH-14-(w+1)*i,SCREEN_HEIGHT-29,w,15,color);
-						}
-					}
-					else {
-						float width = ((float)currentGun->mClipAmmo/clip)*120;
-						mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
-						mRenderer->FillRect(SCREEN_WIDTH-14-width,SCREEN_HEIGHT-29,width,15,ARGB(255,255,255,255));
-					}
-				}
-
-				sprintf(buffer,"%d",currentGun->mRemainingAmmo); 
-				gFont->DrawShadowedString(buffer, SCREEN_WIDTH-14-50, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
-
-				sprintf(buffer,"%d|",currentGun->mClipAmmo); 
-				gFont->DrawShadowedString(buffer, SCREEN_WIDTH-14-50-25, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
-
-			}
-		}
-		/*if (mSwitchTimer > 0.0f) {
-			for (int i=0; i<5; i++) {
-				mRenderer->FillRect(80+i*37,5,32,32,ARGB(100,255,200,0));
-				if (mPlayer->mGunIndex == i && mPlayer->mGuns[i] != NULL) {
-					mRenderer->FillRect(80+i*37,37,32,32,ARGB(150,255,200,0));
-					mPlayer->GetCurrentGun()->mGun->mGroundQuad->SetColor(ARGB(255,255,128,0));
-					mRenderer->RenderQuad(mPlayer->GetCurrentGun()->mGun->mGroundQuad,96+i*37,53);
-					mPlayer->GetCurrentGun()->mGun->mGroundQuad->SetColor(ARGB(255,255,255,255));
-				}
-			}
-		}*/
-		
-		sprintf(buffer,"$%d",mPlayer->mMoney);
-		gFont->SetScale(1.0f);
-
-		gBuyZoneQuad->SetColor(ARGB(200,0,0,0));
-		mRenderer->RenderQuad(gBuyZoneQuad,81,11);
-
-		if (mPlayer->mIsInBuyZone) {
-			gBuyZoneQuad->SetColor(ARGB(255,100,200,100));
-			gFont->SetColor(ARGB(255,100,200,100));
-		}
-		else {
-			gBuyZoneQuad->SetColor(ARGB(200,128,128,128));
-			gFont->SetColor(ARGB(200,128,128,128));
-		}
-		gFont->DrawShadowedString(buffer,100,10);
-		mRenderer->RenderQuad(gBuyZoneQuad,80,10);
-		
-		//mRenderer->FillCircle(40,40,35,ARGB(175,0,255,0));
-		//mRenderer->DrawLine(5,40,75,40,ARGB(175,153,153,153));
-		//mRenderer->DrawLine(40,5,40,75,ARGB(175,153,153,153));
-
-		float factor = 32/400.0f;
-
-		if (mMap->mOverviewQuad != NULL) {
-			float x = dx*factor-31;
-			float y = dy*factor-31;
-			float w = mMap->mOverviewWidth;
-			if (-x < 0) w -= fabs(x);
-			else if (-x+w > 62) w = 62-fabs(x);
-			if (w > 62) w = 62;
-
-			float h = mMap->mOverviewHeight;
-			if (-y < 0) h -= fabs(y);
-			else if (-y+h > 62) h = 62-fabs(y);
-			if (h > 62) h = 62;
-
-			mMap->mOverviewQuad->SetTextureRect((x<0)?0:x,(y<0)?0:y,w,h);
-			if (x > 0) x = 0;
-			if (y > 0) y = 0;
-			mRenderer->RenderQuad(mMap->mOverviewQuad,10-x+1,10-y+1);
-		}
-		mRenderer->RenderQuad(gRadarQuad,10,10);
-		//mRenderer->FillRect(10,10,64,64,ARGB(128,0,100,0));
-		//mRenderer->DrawRect(10+16,10+23,32,18,ARGB(255,255,255,255));
-
-		for (unsigned int i=0;i<mPeople.size();i++) {
-			if (mPeople[i]->mState == DEAD) continue;
-			if (mPeople[i]->mTeam == NONE) continue;
-			if (mGameType != FFA && mPeople[i]->mTeam != mPlayer->mTeam && mPeople[i]->mRadarTime == 0.0f) continue;
-			//if (mPeople[i] == mPlayer) continue;
-
-			float x = 0.0f;
-			float y = 0.0f;
-
-			if (mPeople[i]->mTeam == mPlayer->mTeam) {
-				x = (mPeople[i]->mX-dx)*factor;
-				y = (mPeople[i]->mY-dy)*factor;
-			}
-			else {
-				x = (mPeople[i]->mRadarX-dx)*factor;
-				y = (mPeople[i]->mRadarY-dy)*factor;
-			}
-
-			if (x > 32) {
-				x = 32;
-			}
-			else if (x < -32) {
-				x = -32;
-			}
-			if (y > 32) {
-				y = 32;
-			}
-			else if (y < -32) {
-				y = -32;
-			}
-
-			if (mPeople[i] == mPlayer) {
-				mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPlayer->mFacingAngle,ARGB(255,255,255,255));
-			}
-			else if (mGameType != FFA && mPeople[i]->mTeam == mPlayer->mTeam) {
-				mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPeople[i]->mFacingAngle,ARGB(255,0,255,0));
-			}
-			else {
-				int alpha = mPeople[i]->mRadarTime/1000.0f*255; 
-				if (alpha > 255) alpha = 255;
-				//mRenderer->FillCircle(10+32+x,10+32+y,1.5f,ARGB(alpha,255,0,0));
-				//mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPeople[i]->mFacingAngle,ARGB(alpha,255,0,0));
-				mRenderer->FillRect(10+32+x-1,10+32+y-1,3,3,ARGB(alpha,255,0,0));
-			}
-			/*if (mPlayer->mTeam == CT) {
-				mRenderer->FillRect(40.5f+cosf(theta)*dist,40.5f+sinf(theta)*dist,3,3,ARGB(255,153,204,255));
-			}
-			else if (mPlayer->mTeam == T) {
-				mRenderer->FillRect(40.5f+cosf(theta)*dist,40.5f+sinf(theta)*dist,3,3,ARGB(255,255,64,64));
-			}*/
-		}
-
-		if (mGameType == CTF) {
-			for (int i=0; i<=1; i++) {
-				if (mFlagHolder[i] != NULL) {
-					mFlagX[i] = mFlagHolder[i]->mX;
-					mFlagY[i] = mFlagHolder[i]->mY;
-				}
-
-				float x = (mFlagX[i]-dx)*factor;
-				float y = (mFlagY[i]-dy)*factor;
-
-				if (x > 32) {
-					x = 32;
-				}
-				else if (x < -32) {
-					x = -32;
-				}
-				if (y > 32) {
-					y = 32;
-				}
-				else if (y < -32) {
-					y = -32;
-				}
-
-				if (i == CT) {
-					gFlagRadarQuad->SetColor(ARGB(255,153,204,255));
-				}
-				else {
-					gFlagRadarQuad->SetColor(ARGB(255,255,64,64));
-				}
-				mRenderer->RenderQuad(gFlagRadarQuad,10+32+x,10+32+y);
-			}
-
-			gFont->SetScale(0.7f);
-			for (int i=0; i<=1; i++) {
-				float dx = mFlagX[i]-mCamera->mX;
-				float dy = mFlagY[i]-mCamera->mY;
-				if (fabs(dx) < SCREEN_WIDTH_2 && fabs(dy) < SCREEN_HEIGHT_2) continue;
-				float angle = atan2f(dy,dx);
-				
-				float x = 90*cosf(angle)+SCREEN_WIDTH_2;
-				float y = 90*sinf(angle)+SCREEN_HEIGHT_2;
-
-				gScoreIconQuads[CTF]->SetColor(ARGB(200,0,0,0));
-				gFlagArrowQuad->SetColor(ARGB(200,0,0,0));
-
-				mRenderer->RenderQuad(gScoreIconQuads[CTF],x+1,y+1);
-				mRenderer->RenderQuad(gFlagArrowQuad,x+1,y+1,angle+M_PI_2);
-
-				if (i == CT) {
-					gScoreIconQuads[CTF]->SetColor(ARGB(255,153,204,255));
-					gFlagArrowQuad->SetColor(ARGB(255,153,204,255));
-					gFont->SetColor(ARGB(255,153,204,255));
-				}
-				else {
-					gScoreIconQuads[CTF]->SetColor(ARGB(255,255,64,64));
-					gFlagArrowQuad->SetColor(ARGB(255,255,64,64));
-					gFont->SetColor(ARGB(255,255,64,64));
-				}
-				mRenderer->RenderQuad(gScoreIconQuads[CTF],x,y);
-				mRenderer->RenderQuad(gFlagArrowQuad,x,y,angle+M_PI_2);
-
-				float x2 = 98*cosf(angle)+SCREEN_WIDTH_2;
-				float y2 = 98*sinf(angle)+SCREEN_HEIGHT_2;
-
-				if (i == mPlayer->mTeam) {
-					if (mIsFlagHome[i]) {
-						sprintf(buffer,"%s","Defend");
-					}
-					else {
-						if (mFlagHolder[i] == NULL) {
-							sprintf(buffer,"%s","Return");
-						}
-						else {
-							sprintf(buffer,"%s","Kill");
-						}
-					}
-				}
-				else {
-					if (mIsFlagHome[i]) {
-						sprintf(buffer,"%s","Capture");
-					}
-					else {
-						if (mFlagHolder[i] == NULL) {
-							sprintf(buffer,"%s","Capture");
-						}
-						else {
-							sprintf(buffer,"%s","Escort");
-						}
-					}
-				}
-				gFont->DrawShadowedString(buffer,x2,y2-25,JGETEXT_CENTER);
-			}
-		}
-		
-		/**if (mRoundStartTime < 2000.0f) {
-			gFont->SetColor(ARGB(255,255,200,0));
-			gFont->SetScale(2.0f + mRoundStartTime/1000.0f);
-			gFont->DrawString("Round Start", 240.0f, 100.0f, JGETEXT_CENTER);
-		}**/
-	}
-	else {
+    if (mPlayer->mState == DEAD) {
 		if (mSpecState == THIRDPERSON) {
 			if (mSpec->mIsFlashed) {
 				float alpha = 0.0f;
@@ -2147,143 +1782,6 @@ void Game::Render()
 			gFont->SetScale(0.75f);
 			gFont->DrawString("[X] Next Player",SCREEN_WIDTH-15,247.0f,JGETEXT_RIGHT);
 			gFont->SetScale(0.9f);
-		}
-	}
-
-	if (mSpecState != NONE) {
-		gFont->SetScale(0.7f);
-
-		float x = 75.0f;
-		float y = SCREEN_HEIGHT_F-40.0f;
-
-		if (mPlayer->mState == DEAD) {
-			x = 15.0f;
-			y = 3.0f;
-		}
-
-		int num1 = 0;
-		int num2 = 0;
-		int maxNum = 0;
-		int spacing = 0;
-		int arrow = -1;
-		int textspacing = 0;
-		DWORD color1 = ARGB(255,255,255,255);
-		DWORD color2 = ARGB(255,255,255,255);
-
-		if (mGameType == TEAM) {
-			maxNum = 8;
-			spacing = 7;
-			textspacing = 10;
-			if (mNumRemainingCTs > mNumRemainingTs || (mNumRemainingCTs == mNumRemainingTs && mPlayer->mTeam == CT)) {
-				color1 = ARGB(255,153,204,255);
-				color2 = ARGB(255,255,64,64);
-				num1 = mNumRemainingCTs;
-				num2 = mNumRemainingTs;
-				if (mPlayer->mTeam != NONE) {
-					arrow = (mPlayer->mTeam == CT) ? 0 : 1;
-				}
-			}
-			else {
-				color2 = ARGB(255,153,204,255);
-				color1 = ARGB(255,255,64,64);
-				num2 = mNumRemainingCTs;
-				num1 = mNumRemainingTs;
-				if (mPlayer->mTeam != NONE) {
-					arrow = (mPlayer->mTeam == CT) ? 1 : 0;
-				}
-			}
-
-		}
-		else if (mGameType == FFA) {
-			maxNum = 6;
-			spacing = 10;
-			textspacing = 12;
-			bool isLeader = (mPeople[0] == mPlayer);
-
-			if (isLeader) {
-				color1 = ARGB(255,153,204,255);
-				color2 = ARGB(255,255,64,64);
-				num1 = mPlayer->mNumKills;
-				if (mPeople.size() >= 2) {
-					num2 = mPeople[1]->mNumKills;
-				}
-				else {
-					num2 = 0;
-				}
-			}
-			else {
-				color2 = ARGB(255,153,204,255);
-				color1 = ARGB(255,255,64,64);
-				num1 = mPeople[0]->mNumKills;
-				num2 = mPlayer->mNumKills;
-			}
-			arrow = (isLeader) ? 0 : 1;
-		}
-		else if (mGameType == CTF) {
-			maxNum = 5;
-			spacing = 12;
-			textspacing = 11;
-			if (mNumFlags[CT] > mNumFlags[T] || (mNumFlags[CT] == mNumFlags[T] && mPlayer->mTeam == CT)) {
-				color1 = ARGB(255,153,204,255);
-				color2 = ARGB(255,255,64,64);
-				num1 = mNumFlags[CT];
-				num2 = mNumFlags[T];
-				if (mPlayer->mTeam != NONE) {
-					arrow = (mPlayer->mTeam == CT) ? 0 : 1;
-				}
-			}
-			else {
-				color2 = ARGB(255,153,204,255);
-				color1 = ARGB(255,255,64,64);
-				num2 = mNumFlags[CT];
-				num1 = mNumFlags[T];
-				if (mPlayer->mTeam != NONE) {
-					arrow = (mPlayer->mTeam == CT) ? 1 : 0;
-				}
-			}
-		}
-
-		if (arrow != -1) {
-			gScoreIconQuads[3]->SetColor(ARGB(200,0,0,0));
-			mRenderer->RenderQuad(gScoreIconQuads[3],x+5-10+1,y+6+arrow*15+1);
-			if (arrow == 0) {
-				gScoreIconQuads[3]->SetColor(color1);
-			}
-			else {
-				gScoreIconQuads[3]->SetColor(color2);
-			}
-			mRenderer->RenderQuad(gScoreIconQuads[3],x+5-10,y+6+arrow*15);
-		}
-
-		for (int i=0; i<num1; i++) {
-			gScoreIconQuads[mGameType]->SetColor(ARGB(200,0,0,0));
-			mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i+1,y+6+1);
-
-			gScoreIconQuads[mGameType]->SetColor(color1);
-			mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i,y+6);
-
-			if (num1 > maxNum) {
-				sprintf(buffer,"x%d",num1);
-				gFont->SetColor(color1);
-				gFont->DrawShadowedString(buffer,x+textspacing,y);
-				break;
-			}
-		}
-
-		y += 15;
-		for (int i=0; i<num2; i++) {
-			gScoreIconQuads[mGameType]->SetColor(ARGB(200,0,0,0));
-			mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i+1,y+6+1);
-
-			gScoreIconQuads[mGameType]->SetColor(color2);
-			mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i,y+6);
-
-			if (num2 > maxNum) {
-				sprintf(buffer,"x%d",num2);
-				gFont->SetColor(color2);
-				gFont->DrawShadowedString(buffer,x+textspacing,y);
-				break;
-			}
 		}
 	}
 
@@ -2809,6 +2307,511 @@ void Game::Render()
 
 	mRenderer->FillPolygon(x, y, 4, ARGB(100,255,0,0));*/
 }
+
+void Game::RenderBottom()
+{
+    mRenderer->ClearScreen(ARGB(255,255,255,255));
+    mRenderer->RenderQuad(gBgQuad, 0.0f, 0.0f);
+    char buffer[255];
+    float dx = mCamera->GetX();
+    float dy = mCamera->GetY();
+
+    if (mSpecState != NONE) {
+        gFont->SetScale(0.7f);
+
+        float x = 75.0f;
+        float y = SCREEN_HEIGHT_F-40.0f;
+
+        if (mPlayer->mState == DEAD) {
+            x = 15.0f;
+            y = 3.0f;
+        }
+
+        int num1 = 0;
+        int num2 = 0;
+        int maxNum = 0;
+        int spacing = 0;
+        int arrow = -1;
+        int textspacing = 0;
+        DWORD color1 = ARGB(255,255,255,255);
+        DWORD color2 = ARGB(255,255,255,255);
+
+        if (mGameType == TEAM) {
+            maxNum = 8;
+            spacing = 7;
+            textspacing = 10;
+            if (mNumRemainingCTs > mNumRemainingTs || (mNumRemainingCTs == mNumRemainingTs && mPlayer->mTeam == CT)) {
+                color1 = ARGB(255,153,204,255);
+                color2 = ARGB(255,255,64,64);
+                num1 = mNumRemainingCTs;
+                num2 = mNumRemainingTs;
+                if (mPlayer->mTeam != NONE) {
+                    arrow = (mPlayer->mTeam == CT) ? 0 : 1;
+                }
+            }
+            else {
+                color2 = ARGB(255,153,204,255);
+                color1 = ARGB(255,255,64,64);
+                num2 = mNumRemainingCTs;
+                num1 = mNumRemainingTs;
+                if (mPlayer->mTeam != NONE) {
+                    arrow = (mPlayer->mTeam == CT) ? 1 : 0;
+                }
+            }
+
+        }
+        else if (mGameType == FFA) {
+            maxNum = 6;
+            spacing = 10;
+            textspacing = 12;
+            bool isLeader = (mPeople[0] == mPlayer);
+
+            if (isLeader) {
+                color1 = ARGB(255,153,204,255);
+                color2 = ARGB(255,255,64,64);
+                num1 = mPlayer->mNumKills;
+                if (mPeople.size() >= 2) {
+                    num2 = mPeople[1]->mNumKills;
+                }
+                else {
+                    num2 = 0;
+                }
+            }
+            else {
+                color2 = ARGB(255,153,204,255);
+                color1 = ARGB(255,255,64,64);
+                num1 = mPeople[0]->mNumKills;
+                num2 = mPlayer->mNumKills;
+            }
+            arrow = (isLeader) ? 0 : 1;
+        }
+        else if (mGameType == CTF) {
+            maxNum = 5;
+            spacing = 12;
+            textspacing = 11;
+            if (mNumFlags[CT] > mNumFlags[T] || (mNumFlags[CT] == mNumFlags[T] && mPlayer->mTeam == CT)) {
+                color1 = ARGB(255,153,204,255);
+                color2 = ARGB(255,255,64,64);
+                num1 = mNumFlags[CT];
+                num2 = mNumFlags[T];
+                if (mPlayer->mTeam != NONE) {
+                    arrow = (mPlayer->mTeam == CT) ? 0 : 1;
+                }
+            }
+            else {
+                color2 = ARGB(255,153,204,255);
+                color1 = ARGB(255,255,64,64);
+                num2 = mNumFlags[CT];
+                num1 = mNumFlags[T];
+                if (mPlayer->mTeam != NONE) {
+                    arrow = (mPlayer->mTeam == CT) ? 1 : 0;
+                }
+            }
+        }
+
+        if (arrow != -1) {
+            gScoreIconQuads[3]->SetColor(ARGB(200,0,0,0));
+            mRenderer->RenderQuad(gScoreIconQuads[3],x+5-10+1,y+6+arrow*15+1);
+            if (arrow == 0) {
+                gScoreIconQuads[3]->SetColor(color1);
+            }
+            else {
+                gScoreIconQuads[3]->SetColor(color2);
+            }
+            mRenderer->RenderQuad(gScoreIconQuads[3],x+5-10,y+6+arrow*15);
+        }
+        
+        for (int i=0; i<num1; i++) {
+            gScoreIconQuads[mGameType]->SetColor(ARGB(200,0,0,0));
+            mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i+1,y+6+1);
+            
+            gScoreIconQuads[mGameType]->SetColor(color1);
+            mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i,y+6);
+            
+            if (num1 > maxNum) {
+                sprintf(buffer,"x%d",num1);
+                gFont->SetColor(color1);
+                gFont->DrawShadowedString(buffer,x+textspacing,y);
+                break;
+            }
+        }
+        
+        y += 15;
+        for (int i=0; i<num2; i++) {
+            gScoreIconQuads[mGameType]->SetColor(ARGB(200,0,0,0));
+            mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i+1,y+6+1);
+            
+            gScoreIconQuads[mGameType]->SetColor(color2);
+            mRenderer->RenderQuad(gScoreIconQuads[mGameType],x+5+spacing*i,y+6);
+            
+            if (num2 > maxNum) {
+                sprintf(buffer,"x%d",num2);
+                gFont->SetColor(color2);
+                gFont->DrawShadowedString(buffer,x+textspacing,y);
+                break;
+            }
+        }
+    }
+
+    if (mPlayer->mState != DEAD) {
+        sprintf(buffer,"%i",mPlayer->mHealth);
+        //gHudFont->SetColor(ARGB(230,255,200,0));
+        //gHudFont->SetScale(2.0f);
+        //gHudFont->DrawString(buffer, 10.0f, SCREEN_HEIGHT_F-40.0f, JGETEXT_LEFT);
+
+        int height = 44*(mPlayer->mHealth/100.0f);
+        if (height < 1) height = 1;
+        gHealthFillQuad->SetTextureRect(48,44-height+2,48,height);
+        mRenderer->RenderQuad(gHealthBorderQuad,10,SCREEN_HEIGHT-58);
+        mRenderer->RenderQuad(gHealthFillQuad,10,SCREEN_HEIGHT-58+44-height+2);
+
+        gFont->SetColor(ARGB(255,255,255,255));
+        gFont->SetScale(0.7f);
+        gFont->DrawShadowedString(buffer, 10+((mPlayer->mHealth == 100)?22:24), SCREEN_HEIGHT_F-40.0f, JGETEXT_CENTER);
+
+        //gHudFont->SetScale(1.5f);
+
+        gFont->SetScale(1.0f);
+        gFont->SetColor(ARGB(230,255,64,64));
+
+        int seconds = (int)floorf(mRoundTimer);
+        int minutes = (int)floorf(seconds/60.0f);
+        int centiseconds = (int)floorf((mRoundTimer-seconds)*100);
+        sprintf(buffer,"%02d:%02d.%02d",minutes,seconds%60,centiseconds);
+
+        //gHudFont->SetColor(ARGB(230,255,64,64));
+        //gHudFont->DrawString(buffer, SCREEN_WIDTH_2, SCREEN_HEIGHT-30, JGETEXT_CENTER);
+
+        gFont->DrawShadowedString(buffer, SCREEN_WIDTH_2, SCREEN_HEIGHT-25, JGETEXT_CENTER);
+
+        /*if (mPlayer->GetCurrentGun() != NULL) {
+         gHudFont->SetColor(ARGB(230,255,200,0));
+         if (mPlayer->mGunIndex == KNIFE) {
+         }
+         else if (mPlayer->mGunIndex == GRENADE) {
+         sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mClipAmmo);
+         gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
+         }
+         else {
+         sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mClipAmmo);
+         gHudFont->DrawString(buffer, SCREEN_WIDTH-80, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
+
+         gHudFont->DrawString("|", SCREEN_WIDTH-70, SCREEN_HEIGHT-30, JGETEXT_CENTER);
+
+         sprintf(buffer,"%i",mPlayer->GetCurrentGun()->mRemainingAmmo);
+         gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-30, JGETEXT_RIGHT);
+         }
+         }
+
+         gHudFont->SetColor(ARGB(230,0,255,0));
+         sprintf(buffer,"$%i",mPlayer->mMoney);
+         gHudFont->DrawString(buffer, SCREEN_WIDTH-10, SCREEN_HEIGHT-60, JGETEXT_RIGHT);*/
+
+        mRenderer->RenderQuad(gAmmoBarQuad,SCREEN_WIDTH-10,SCREEN_HEIGHT-10);
+        //mRenderer->FillRect(SCREEN_WIDTH-(10+40+4),SCREEN_HEIGHT-(10+64+3*32),38,3*32,ARGB(150,100,100,100));
+        int index = mPlayer->mGunIndex;
+        if (mPlayer->mGuns[index] != NULL) {
+            JQuad* quad = mPlayer->mGuns[index]->mGun->mGroundQuad;
+            mRenderer->RenderQuad(quad,SCREEN_WIDTH-(22+10),SCREEN_HEIGHT-(22+10+20),0.0f,1.4f,1.4f);
+        }
+        int y = 0;
+        for (int i=0; i<4; i++) {
+            index++;
+            if (index >= 5) {
+                index = 0;
+            }
+            //mRenderer->FillRect(80+i*37,5,32,32,ARGB(100,255,200,0));
+            if (mPlayer->mGuns[index] != NULL) {
+
+                //mRenderer->FillRect(80+i*37,37,32,32,ARGB(150,255,200,0));
+                int alpha = 255-25*y;
+                float scale = 1.0f;
+                /*PIXEL_TYPE colors[] =
+                 {
+                 ARGB(200,200,200,200),
+                 ARGB(200,200,200,200),
+                 ARGB(200,100,100,100),
+                 ARGB(200,100,100,100)
+                 };*/
+                mRenderer->FillRect(SCREEN_WIDTH-(22+10+18),SCREEN_HEIGHT-(64+10+20+20*y),36,19,ARGB(200,100,100,100));
+                JQuad* quad = mPlayer->mGuns[index]->mGun->mGroundQuad;
+                //quad->SetColor(ARGB(alpha,255,255,255));
+                mRenderer->RenderQuad(quad,SCREEN_WIDTH-(22+10),SCREEN_HEIGHT-(64+10+10+20*y));
+                //quad->SetColor(ARGB(255,255,255,255));
+                y++;
+            }
+        }
+        
+    }
+
+
+    GunObject *currentGun = mPlayer->GetCurrentGun();
+    if (currentGun != NULL && mPlayer->mState != DEAD) {
+        if (mPlayer->mState == ATTACKING || mPlayer->mState == SWITCHING) {
+            mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,50,50,50));
+            float width = 40.0f;
+            float delay = currentGun->mGun->mDelay;
+            if (mPlayer->mState == SWITCHING) {
+                delay *= 0.75f;
+                if (delay < 150.0f) delay = 150.0f;
+            }
+            if (delay > EPSILON) {
+                width *= mPlayer->mStateTime/delay;
+            }
+            mRenderer->FillRect(SCREEN_WIDTH-(44+10)-width+40,SCREEN_HEIGHT-(8+10+20),width,4,ARGB(255,150,150,150));
+        }
+        else if (mPlayer->mState == RELOADING) {
+            mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,50,50,50));
+        }
+        else {
+            mRenderer->FillRect(SCREEN_WIDTH-(44+10),SCREEN_HEIGHT-(8+10+20),40,4,ARGB(255,150,150,150));
+        }
+
+        gFont->SetColor(ARGB(255,255,255,255));
+        gFont->SetScale(0.7f);
+        if (mPlayer->mGunIndex == KNIFE) {
+            //mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
+            mRenderer->FillRect(SCREEN_WIDTH-14-120,SCREEN_HEIGHT-29,120,15,ARGB(255,255,255,255));
+            gFont->DrawShadowedString("-", SCREEN_WIDTH-14-50, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
+            gFont->DrawShadowedString("-|", SCREEN_WIDTH-14-50-25, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
+        }
+        else {
+            if (mPlayer->mState == RELOADING) {
+                float width = 120.0f;
+                if (currentGun->mGun->mReloadDelay > EPSILON) {
+                    width *= mPlayer->mStateTime/(currentGun->mGun->mReloadDelay);
+                }
+                mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
+                mRenderer->FillRect(SCREEN_WIDTH-14-width,SCREEN_HEIGHT-29,width,15,ARGB(255,255,255,255));
+                gFont->DrawShadowedString("reloading", SCREEN_WIDTH-10-64,SCREEN_HEIGHT-28,JGETEXT_CENTER);
+            }
+            else {
+                int clip = currentGun->mGun->mClip;
+                int w = currentGun->mGun->mAmmoBarWidth;
+
+                if (w != 0) {
+                    for (int i=1; i<=clip; i++) {
+                        DWORD color = ARGB(255,50,50,50);
+                        if (i <= currentGun->mClipAmmo) {
+                            color = ARGB(255,255,255,255);
+                        }
+                        mRenderer->FillRect(SCREEN_WIDTH-14-(w+1)*i,SCREEN_HEIGHT-29,w,15,color);
+                    }
+                }
+                else {
+                    float width = ((float)currentGun->mClipAmmo/clip)*120;
+                    mRenderer->FillRect(SCREEN_WIDTH-10-128+4,SCREEN_HEIGHT-29,120,15,ARGB(255,50,50,50));
+                    mRenderer->FillRect(SCREEN_WIDTH-14-width,SCREEN_HEIGHT-29,width,15,ARGB(255,255,255,255));
+                }
+            }
+
+            sprintf(buffer,"%d",currentGun->mRemainingAmmo);
+            gFont->DrawShadowedString(buffer, SCREEN_WIDTH-14-50, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
+
+            sprintf(buffer,"%d|",currentGun->mClipAmmo);
+            gFont->DrawShadowedString(buffer, SCREEN_WIDTH-14-50-25, SCREEN_HEIGHT-45, JGETEXT_RIGHT);
+
+        }
+    }
+
+    sprintf(buffer,"$%d",mPlayer->mMoney);
+    gFont->SetScale(1.0f);
+
+    gBuyZoneQuad->SetColor(ARGB(200,0,0,0));
+    mRenderer->RenderQuad(gBuyZoneQuad,81,11);
+
+    if (mPlayer->mIsInBuyZone) {
+        gBuyZoneQuad->SetColor(ARGB(255,100,200,100));
+        gFont->SetColor(ARGB(255,100,200,100));
+    }
+    else {
+        gBuyZoneQuad->SetColor(ARGB(200,128,128,128));
+        gFont->SetColor(ARGB(200,128,128,128));
+    }
+    gFont->DrawShadowedString(buffer,100,10);
+    mRenderer->RenderQuad(gBuyZoneQuad,80,10);
+
+    //mRenderer->FillCircle(40,40,35,ARGB(175,0,255,0));
+    //mRenderer->DrawLine(5,40,75,40,ARGB(175,153,153,153));
+    //mRenderer->DrawLine(40,5,40,75,ARGB(175,153,153,153));
+
+    mRenderer->PushMatrix();
+    float baseY = (((240.0f - 32.0f) / 2.0f) + 32.0f);
+    float baseX = (((320.0f - 32.0f) / 2.0f) - 16.0f) * (SCREEN_WIDTH_F / SCREEN_HEIGHT_F);
+    mRenderer->Translate(baseX / (2.0f * (SCREEN_WIDTH_F / SCREEN_HEIGHT_F)), -baseY * 2.0f, 0);
+    mRenderer->Scale(2.0f * (SCREEN_WIDTH_F / SCREEN_HEIGHT_F), 2.0f, 0);
+    float factor = 32/480.0f;
+
+    if (mMap->mOverviewQuad != NULL) {
+        float x = dx*factor-31;
+        float y = dy*factor-31;
+        float w = mMap->mOverviewWidth;
+        if (-x < 0) w -= fabs(x);
+        else if (-x+w > 62) w = 62-fabs(x);
+        if (w > 62) w = 62;
+
+        float h = mMap->mOverviewHeight;
+        if (-y < 0) h -= fabs(y);
+        else if (-y+h > 62) h = 62-fabs(y);
+        if (h > 62) h = 62;
+
+        mMap->mOverviewQuad->SetTextureRect((x<0)?0:x,(y<0)?0:y,w,h);
+        if (x > 0) x = 0;
+        if (y > 0) y = 0;
+        mRenderer->RenderQuad(mMap->mOverviewQuad,10-x+1,10-y+1);
+    }
+    mRenderer->RenderQuad(gRadarQuad,10,10);
+    //mRenderer->FillRect(10,10,64,64,ARGB(128,0,100,0));
+    //mRenderer->DrawRect(10+16,10+23,32,18,ARGB(255,255,255,255));
+
+    for (unsigned int i=0;i<mPeople.size();i++) {
+        if (mPeople[i]->mState == DEAD) continue;
+        if (mPeople[i]->mTeam == NONE) continue;
+        if (mGameType != FFA && mPeople[i]->mTeam != mPlayer->mTeam && mPeople[i]->mRadarTime == 0.0f) continue;
+        //if (mPeople[i] == mPlayer) continue;
+
+        float x = 0.0f;
+        float y = 0.0f;
+
+        if (mPeople[i]->mTeam == mPlayer->mTeam) {
+            x = (mPeople[i]->mX-dx)*factor;
+            y = (mPeople[i]->mY-dy)*factor;
+        }
+        else {
+            x = (mPeople[i]->mRadarX-dx)*factor;
+            y = (mPeople[i]->mRadarY-dy)*factor;
+        }
+
+        if (x > 32) {
+            x = 32;
+        }
+        else if (x < -32) {
+            x = -32;
+        }
+        if (y > 32) {
+            y = 32;
+        }
+        else if (y < -32) {
+            y = -32;
+        }
+
+        if (mPeople[i] == mPlayer) {
+            mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPlayer->mFacingAngle,ARGB(255,255,255,255));
+        }
+        else if (mGameType != FFA && mPeople[i]->mTeam == mPlayer->mTeam) {
+            mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPeople[i]->mFacingAngle,ARGB(255,0,255,0));
+        }
+        else {
+            int alpha = mPeople[i]->mRadarTime/1000.0f*255;
+            if (alpha > 255) alpha = 255;
+            //mRenderer->FillCircle(10+32+x,10+32+y,1.5f,ARGB(alpha,255,0,0));
+            //mRenderer->FillPolygon(10+32+x,10+32+y,5,3,mPeople[i]->mFacingAngle,ARGB(alpha,255,0,0));
+            mRenderer->FillRect(10+32+x-1,10+32+y-1,3,3,ARGB(alpha,255,0,0));
+        }
+        /*if (mPlayer->mTeam == CT) {
+         mRenderer->FillRect(40.5f+cosf(theta)*dist,40.5f+sinf(theta)*dist,3,3,ARGB(255,153,204,255));
+         }
+         else if (mPlayer->mTeam == T) {
+         mRenderer->FillRect(40.5f+cosf(theta)*dist,40.5f+sinf(theta)*dist,3,3,ARGB(255,255,64,64));
+         }*/
+    }
+    mRenderer->PopMatrix();
+
+    if (mGameType == CTF) {
+        for (int i=0; i<=1; i++) {
+            if (mFlagHolder[i] != NULL) {
+                mFlagX[i] = mFlagHolder[i]->mX;
+                mFlagY[i] = mFlagHolder[i]->mY;
+            }
+
+            float x = (mFlagX[i]-dx)*factor;
+            float y = (mFlagY[i]-dy)*factor;
+
+            if (x > 32) {
+                x = 32;
+            }
+            else if (x < -32) {
+                x = -32;
+            }
+            if (y > 32) {
+                y = 32;
+            }
+            else if (y < -32) {
+                y = -32;
+            }
+
+            if (i == CT) {
+                gFlagRadarQuad->SetColor(ARGB(255,153,204,255));
+            }
+            else {
+                gFlagRadarQuad->SetColor(ARGB(255,255,64,64));
+            }
+            mRenderer->RenderQuad(gFlagRadarQuad,10+32+x,10+32+y);
+        }
+
+        gFont->SetScale(0.7f);
+        for (int i=0; i<=1; i++) {
+            float dx = mFlagX[i]-mCamera->mX;
+            float dy = mFlagY[i]-mCamera->mY;
+            if (fabs(dx) < SCREEN_WIDTH_2 && fabs(dy) < SCREEN_HEIGHT_2) continue;
+            float angle = atan2f(dy,dx);
+
+            float x = 90*cosf(angle)+SCREEN_WIDTH_2;
+            float y = 90*sinf(angle)+SCREEN_HEIGHT_2;
+
+            gScoreIconQuads[CTF]->SetColor(ARGB(200,0,0,0));
+            gFlagArrowQuad->SetColor(ARGB(200,0,0,0));
+            
+            mRenderer->RenderQuad(gScoreIconQuads[CTF],x+1,y+1);
+            mRenderer->RenderQuad(gFlagArrowQuad,x+1,y+1,angle+M_PI_2);
+            
+            if (i == CT) {
+                gScoreIconQuads[CTF]->SetColor(ARGB(255,153,204,255));
+                gFlagArrowQuad->SetColor(ARGB(255,153,204,255));
+                gFont->SetColor(ARGB(255,153,204,255));
+            }
+            else {
+                gScoreIconQuads[CTF]->SetColor(ARGB(255,255,64,64));
+                gFlagArrowQuad->SetColor(ARGB(255,255,64,64));
+                gFont->SetColor(ARGB(255,255,64,64));
+            }
+            mRenderer->RenderQuad(gScoreIconQuads[CTF],x,y);
+            mRenderer->RenderQuad(gFlagArrowQuad,x,y,angle+M_PI_2);
+            
+            float x2 = 98*cosf(angle)+SCREEN_WIDTH_2;
+            float y2 = 98*sinf(angle)+SCREEN_HEIGHT_2;
+            
+            if (i == mPlayer->mTeam) {
+                if (mIsFlagHome[i]) {
+                    sprintf(buffer,"%s","Defend");
+                }
+                else {
+                    if (mFlagHolder[i] == NULL) {
+                        sprintf(buffer,"%s","Return");
+                    }
+                    else {
+                        sprintf(buffer,"%s","Kill");
+                    }
+                }
+            }
+            else {
+                if (mIsFlagHome[i]) {
+                    sprintf(buffer,"%s","Capture");
+                }
+                else {
+                    if (mFlagHolder[i] == NULL) {
+                        sprintf(buffer,"%s","Capture");
+                    }
+                    else {
+                        sprintf(buffer,"%s","Escort");
+                    }
+                }
+            }
+            gFont->DrawShadowedString(buffer,x2,y2-25,JGETEXT_CENTER);
+        }
+    }
+}
+
 
 void Game::UpdateScores(Person* attacker, Person* victim, Gun* weapon) {
 	victim->mNumDeaths++;

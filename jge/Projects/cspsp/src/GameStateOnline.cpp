@@ -1157,7 +1157,10 @@ void GameStateOnline::Render()
 	//gFont->printf(10,30,"%f",mClock);
 	//gFont->printf(10,50,"%i",mUdpManager->mOrderId);
 }
-	
+
+void GameStateOnline::RenderBottom() {
+    Game::RenderBottom();
+}
 
 void GameStateOnline::HandlePacket(Packet &packet, bool sendack) {
 	if (mState == PLAYING) {

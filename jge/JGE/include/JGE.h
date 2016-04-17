@@ -130,6 +130,7 @@ public:
 
 	void Update();
 	void Render();
+    void RenderBottom();
 
 	void Pause();
 	void Resume();

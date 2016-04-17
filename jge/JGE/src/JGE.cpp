@@ -391,6 +391,18 @@ void JGE::Render()
 	renderer->EndScene();
 }
 
+void JGE::RenderBottom()
+{
+    JRenderer* renderer = JRenderer::GetInstance();
+
+    renderer->BeginScene();
+
+    if (mApp != NULL)
+        mApp->RenderBottom();
+
+    renderer->EndScene();
+}
+
 
 void JGE::End()
 {

@@ -51,6 +51,7 @@ public:
 	virtual void Destroy();
 	virtual void Update();
 	virtual void Render();
+    virtual void RenderBottom();
 	virtual void Pause();
 	virtual void Resume();
 

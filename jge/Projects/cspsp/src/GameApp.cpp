@@ -188,6 +188,16 @@ void GameApp::Render()
 	
 }
 
+void GameApp::RenderBottom()
+{
+
+    if (mCurrentState != NULL)
+    {
+        mCurrentState->RenderBottom();
+    }
+    
+}
+
 
 //-------------------------------------------------------------------------------------
 // This function is called when the system wants to pause the game. You can set a flag

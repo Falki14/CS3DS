@@ -30,3 +30,6 @@ void GameState::Update(float dt) {
 
 void GameState::Render() {
 }
+
+void GameState::RenderBottom() {
+}

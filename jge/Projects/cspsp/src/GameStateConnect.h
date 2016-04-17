@@ -110,6 +110,7 @@ public:
 	void End();
 	void Update(float dt);
 	void Render();
+    void RenderBottom();
 
 	int CheckLogin(char* buffer);
 	int CheckNewAccount(char* buffer);

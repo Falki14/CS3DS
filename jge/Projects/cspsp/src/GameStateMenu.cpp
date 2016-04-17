@@ -212,6 +212,12 @@ void GameStateMenu::Render()
 	}
 }
 
+void GameStateMenu::RenderBottom()
+{
+    mRenderer->ClearScreen(ARGB(255,255,255,255));
+    mRenderer->RenderQuad(gBgQuad, 0.0f, 0.0f);
+}
+
 
 void GameStateMenu::ButtonPressed(int controllerId, int controlId)
 {

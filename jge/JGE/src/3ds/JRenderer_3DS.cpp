@@ -1390,6 +1390,11 @@ void JRenderer::Translate(float x, float y, float z)
     glTranslatef(x, y, z);
 }
 
+void JRenderer::Scale(float x, float y, float z)
+{
+    glScalef(x, y, z);
+}
+
 
 void JRenderer::RotateX(float angle)
 {

@@ -910,6 +910,11 @@ void GameStateLobby::Render()
 	}
 }
 
+void GameStateLobby::RenderBottom()
+{
+    mRenderer->RenderQuad(gBgQuad, 0.0f, 0.0f);
+}
+
 bool GameStateLobby::LoadLatestNews(char* buffer)
 {
 	char* s;

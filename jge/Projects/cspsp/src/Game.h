@@ -159,6 +159,7 @@ public:
 	virtual void CheckCollisions();
 	virtual void Update(float dt);
 	virtual void Render();
+    virtual void RenderBottom();
 
 	virtual void UpdateCamera(float dt);
 	

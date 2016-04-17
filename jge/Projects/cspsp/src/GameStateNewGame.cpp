@@ -238,3 +238,9 @@ void GameStateNewGame::Render()
 		gFont->DrawShadowedString("[X] Select     [[]] Search     [O] Return to Menu",SCREEN_WIDTH_2,SCREEN_HEIGHT_F-20,JGETEXT_CENTER);
 	}
 }
+
+void GameStateNewGame::RenderBottom()
+{
+    mRenderer->ClearScreen(ARGB(255,255,255,255));
+    mRenderer->RenderQuad(gBgQuad, 0.0f, 0.0f);
+}

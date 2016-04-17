@@ -57,7 +57,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	/// Render function to be called for each frame update. Should do all the
-	/// game rendering here.
+	/// game rendering here for the main display.
 	///
 	/// @par Example: A simple Render() implementation:
 	/// @code
@@ -70,6 +70,22 @@ public:
 	///
 	//////////////////////////////////////////////////////////////////////////
 	virtual void Render() = 0;
+
+    //////////////////////////////////////////////////////////////////////////
+    /// Render function to be called for each frame update. Should do all the
+    /// game rendering here for the subdisplay.
+    ///
+    /// @par Example: A simple Render() implementation:
+    /// @code
+    /// void Render()
+    /// {
+    ///		JRenderer *r = JRenderer::GetInstance();
+    ///		r->FillRect(0,0,480,272,ARGB(255,0,0,0));
+    /// }
+    /// @endcode
+    ///
+    //////////////////////////////////////////////////////////////////////////
+    virtual void RenderBottom() = 0;
 
 	//////////////////////////////////////////////////////////////////////////
 	/// Callback function called when the game is paused by the system.

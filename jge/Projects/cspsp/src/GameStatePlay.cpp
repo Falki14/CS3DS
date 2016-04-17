@@ -807,6 +807,11 @@ void GameStatePlay::Render()
 	Game::Render();
 }
 
+void GameStatePlay::RenderBottom()
+{
+    Game::RenderBottom();
+}
+
 void GameStatePlay::NewGame() {
 
 	char* map;

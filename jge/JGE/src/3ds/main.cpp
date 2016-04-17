@@ -50,6 +50,7 @@ JGameLauncher* g_launcher = NULL;
 
 //------------------------------------------------------------------------
 
+static void *displayContext = NULL;
 
 static u32 gButtons = 0;
 static u32 gOldButtons = 0;
@@ -150,14 +151,8 @@ int InitGL(GLvoid)												// All Setup For OpenGL Goes Here
     glClearDepth (1.0f);										// Depth Buffer Setup
     glDepthFunc (GL_LEQUAL);									// The Type Of Depth Testing (Less Or Equal)
     glEnable (GL_DEPTH_TEST);									// Enable Depth Testing
-//    glShadeModel (GL_SMOOTH);									// Select Smooth Shading
-//    glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);			// Set Perspective Calculations To Most Accurate
-
-//    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);						// Set Line Antialiasing
-    //glEnable(GL_LINE_SMOOTH);									// Enable it!
 
     glEnable(GL_CULL_FACE);										// do not calculate inside of poly's
-//    glFrontFace(GL_CCW);										// counter clock-wise polygons are out
 
     glEnable(GL_TEXTURE_2D);
 
@@ -165,7 +160,6 @@ int InitGL(GLvoid)												// All Setup For OpenGL Goes Here
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_SCISSOR_TEST);									// Enable Clipping
-    //glScissor(20, 20, 320, 240);
 
     return true;												// Initialization Went OK
 }
@@ -209,18 +203,15 @@ void DestroyGame(GLvoid)
 
 }
 
-
-int DrawGLScene(GLvoid)									// Here's Where We Do All The Drawing
+int DrawGLScene(GLvoid)
 {
-
-    // 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear Screen And Depth Buffer
-    // 	glLoadIdentity ();											// Reset The Modelview Matrix
-
-    //if (g_app)
-    //	g_app->Render();
+    glViewport(0, 0, 240, 400);
     g_engine->Render();
+    gfxFlush(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL), 240, 400, GX_TRANSFER_FMT_RGB8);
 
-    //	glFlush ();
+    glViewport(0, 80, 240, 320);
+    g_engine->RenderBottom();
+    gfxFlush(gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL), 240, 320, GX_TRANSFER_FMT_RGB8);
 
     return 0;
 }
@@ -237,20 +228,20 @@ void Update(int dt)
     g_engine->Update();
 
     g_engine->mClicked = false;
-
 }
 
 GLvoid KillGLWindow(GLvoid)								// Properly Kill The Window
 {
     DestroyGame();
-    void *GfxHandle = gfxMakeCurrent(0);
-    gfxDestroyDevice(GfxHandle);
+    gfxMakeCurrent(NULL);
+    gfxDestroyDevice(displayContext);
 }
 
 bool CreateGLWindow(char* title, int width, int height, int bits)
 {
-    void *GfxHandle = gfxCreateDevice(240, 400, 0);
-    gfxMakeCurrent(GfxHandle);
+    displayContext = gfxCreateDevice(240, 400, CAELINA_SHARED_TEXTURES);
+
+    gfxMakeCurrent(displayContext);
     ReSizeGLScene(width, height);
 
     if (!InitGL())
@@ -270,9 +261,7 @@ bool CreateGLWindow(char* title, int width, int height, int bits)
 
 int main(int argc, char **argv) {
     gfxInitDefault();
-    consoleInit(GFX_BOTTOM, NULL);
     hidInit();
-    romfsInit();
     osSetSpeedupEnable(true);
 
     chdir("sdmc:/3ds/cspsp/");
@@ -313,7 +302,6 @@ int main(int argc, char **argv) {
                 //Mint2D::BackupKeys();
                 
                 DrawGLScene();					// Draw The Scene
-                gfxFlush(gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL), 240, 400, GX_TRANSFER_FMT_RGB8);
                 gfxSwapBuffersGpu();
                 gspWaitForVBlank();
             }
@@ -324,7 +312,6 @@ int main(int argc, char **argv) {
         delete g_launcher;
 
     KillGLWindow();
-    romfsExit();
     hidExit();
     gfxExit();
     return 0;
