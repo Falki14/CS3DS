@@ -107,7 +107,7 @@ int Danzeff::GetInput(float dt)
 
 	if (!holding)
 	{
-		if (mEngine->GetButtonState(PSP_CTRL_CROSS) ||  mEngine->GetButtonState(PSP_CTRL_CIRCLE) || mEngine->GetButtonState(PSP_CTRL_TRIANGLE) || mEngine->GetButtonState(PSP_CTRL_SQUARE)) //pressing a char select button
+		if (mEngine->GetButtonState(PSP_CTRL_CIRCLE) ||  mEngine->GetButtonState(PSP_CTRL_CROSS) || mEngine->GetButtonState(PSP_CTRL_TRIANGLE) || mEngine->GetButtonState(PSP_CTRL_SQUARE)) //pressing a char select button
 		{
 			int innerChoice = -1;
 			if (mEngine->GetButtonState(PSP_CTRL_TRIANGLE) && !cross) {
@@ -120,13 +120,13 @@ int Danzeff::GetInput(float dt)
 					innerChoice = 1;
 				}
 			}
-			else if (mEngine->GetButtonState(PSP_CTRL_CROSS) && !cross) {
-				if (KeyRepeated(PSP_CTRL_CROSS,dt)) {
+			else if (mEngine->GetButtonState(PSP_CTRL_CIRCLE) && !cross) {
+				if (KeyRepeated(PSP_CTRL_CIRCLE,dt)) {
 					innerChoice = 2;
 				}
 			}
-			else if (mEngine->GetButtonState(PSP_CTRL_CIRCLE) && !cross) {
-				if (KeyRepeated(PSP_CTRL_CIRCLE,dt)) {
+			else if (mEngine->GetButtonState(PSP_CTRL_CROSS) && !cross) {
+				if (KeyRepeated(PSP_CTRL_CROSS,dt)) {
 					innerChoice = 3;
 				}
 			}
