@@ -264,6 +264,18 @@ int main(int argc, char **argv) {
     hidInit();
     osSetSpeedupEnable(true);
 
+    ndspInit();
+    ndspSetMasterVol(0.15f);
+    ndspSetOutputCount(1);
+    ndspSetOutputMode(NDSP_OUTPUT_STEREO);
+    for (int i = 0; i < 24; ++i) {
+        ndspChnReset(i);
+        ndspChnInitParams(i);
+        ndspChnSetInterp(i, NDSP_INTERP_NONE);
+        ndspChnSetRate(i, 22050.0f);
+        ndspChnSetFormat(i, NDSP_FORMAT_MONO_PCM8);
+    }
+
     chdir("sdmc:/3ds/cspsp/");
 
     g_launcher = new JGameLauncher();
@@ -312,6 +324,7 @@ int main(int argc, char **argv) {
         delete g_launcher;
 
     KillGLWindow();
+    ndspExit();
     hidExit();
     gfxExit();
     return 0;

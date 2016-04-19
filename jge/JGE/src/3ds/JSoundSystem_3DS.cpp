@@ -14,6 +14,7 @@
 #include "../../include/JSoundSystem.h"
 #include "../../include/JFileSystem.h"
 
+#include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
 JMusic::JMusic()
@@ -41,9 +42,9 @@ JSample::JSample()
 
 JSample::~JSample()
 {
-    //JSoundSystem::GetInstance()->FreeSample(this);
-//    if (mSample)
-//        FSOUND_Sample_Free(mSample);
+
+    if (mSample)
+        linearFree(mSample);
 }
 
 
@@ -182,31 +183,33 @@ void JSoundSystem::SetVolume(int volume)
 {
     //	if (music && music->mTrack)
     //		FMUSIC_SetMasterVolume(music->mTrack, volume);
-
-    mVolume = volume;
 }
-
-
-
 
 JSample *JSoundSystem::LoadSample(const char *fileName)
 {
     JSample* sample = new JSample();
-//    if (sample)
-//    {
-//        JFileSystem* fileSystem = JFileSystem::GetInstance();
-//        if (fileSystem->OpenFile(fileName))
-//        {
-//            int size = fileSystem->GetFileSize();
-//            char *buffer = new char[size];
-//            fileSystem->ReadFile(buffer, size);
-//            sample->mSample = FSOUND_Sample_Load(FSOUND_UNMANAGED, buffer, FSOUND_LOADMEMORY, 0, size);
-//
-//            delete[] buffer;
-//            fileSystem->CloseFile();
-//        }
-//
-//    }
+    if (sample)
+    {
+        JFileSystem* fileSystem = JFileSystem::GetInstance();
+        if (fileSystem->OpenFile(fileName))
+        {
+            int size = fileSystem->GetFileSize();
+            s8 *buffer = (s8 *)linearAlloc(size);
+            fileSystem->ReadFile(buffer, size);
+            ndspWaveBuf waveBuf;
+            memset(&waveBuf,0,sizeof(ndspWaveBuf));
+            waveBuf.data_vaddr = &buffer[0];
+            waveBuf.nsamples = size;
+            sample->mSample = (u32 *)buffer;
+            sample->waveBuf = waveBuf;
+            for (int i = 0; i < size; ++i) {
+                buffer[i] = buffer[i] - 127;
+            }
+            DSP_FlushDataCache(buffer, size);
+            fileSystem->CloseFile();
+        }
+
+    }
 
     return sample;
 }
@@ -225,17 +228,32 @@ JSample *JSoundSystem::LoadSample(const char *fileName)
 // 
 // }
 
-
 void JSoundSystem::PlaySample(JSample *sample)
 {
-//    if (sample && sample->mSample)
-//        sample->mVoice = FSOUND_PlaySound(FSOUND_FREE, sample->mSample);
-//    
-//    FSOUND_SetVolume(sample->mVoice,sample->mVolume);
-//    FSOUND_SetPan(sample->mVoice,sample->mPanning);
+    float panLeft = cos(M_PI/2.0f * max(0.0f, (float)(sample->mPanning-1)/256.0f));
+    float panRight =  sin(M_PI/2.0f * max(0.0f, (float)(sample->mPanning-1)/256.0f));
+    float volume = (float)sample->mVolume / 256.0f;
+    float mix[12];
+    memset(mix, 0, sizeof(mix));
+    float lVol = panLeft * volume;
+    float rVol = panRight * volume;
+    mix[0] = lVol;
+    mix[1] = rVol;
+    for (int i = 0; i < 24; ++i) {
+        if (!ndspChnIsPlaying(i)) {
+            ndspChnWaveBufClear(i);
+            ndspChnSetMix(i, mix);
+            ndspChnWaveBufAdd(i, &sample->waveBuf);
+            return;
+        }
+    }
+
+    ndspChnWaveBufClear(0);
+    ndspChnSetMix(0, mix);
+    ndspChnWaveBufAdd(0, &sample->waveBuf);
 }
 
 void JSoundSystem::StopSample(int voice)
 {
-//    FSOUND_StopSound(voice);
+
 }

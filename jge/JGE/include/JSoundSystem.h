@@ -24,7 +24,7 @@
 	#include <windows.h>
 
 #elif defined(_3DS)
-
+    #include <3ds.h>
 #else
 
 	#include <pspgu.h>
@@ -72,8 +72,11 @@ public:
 	int mVolume;
 	int mPanning;
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32)
 	FSOUND_SAMPLE *mSample;
+#elif defined(_3DS)
+    u32 *mSample;
+    ndspWaveBuf waveBuf;
 #else
 	//WAVDATA *mSample;
 	SAMPLE *mSample;
