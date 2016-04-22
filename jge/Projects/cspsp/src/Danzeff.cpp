@@ -229,7 +229,7 @@ void Danzeff::Render(float x, float y)
 	gFont->SetBase(0);
 	gFont->SetColor(ARGB(255,255,255,255));
 	gFont->SetScale(0.7f);
-	gFont->DrawString("[ANALOG + XO^[]] Type",x+75.0f,y-25.0f,JGETEXT_CENTER);
+	gFont->DrawString("[ANALOG + ABXY] Type",x+75.0f,y-25.0f,JGETEXT_CENTER);
 	gFont->DrawString("[L] Toggle     [R] Shift",x+75.0f,y-12.0f,JGETEXT_CENTER);
 }
 
