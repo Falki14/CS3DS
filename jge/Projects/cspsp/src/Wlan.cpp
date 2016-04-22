@@ -145,22 +145,18 @@ int SocketClose(Socket* socket)
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <fcntl.h>
+#include <malloc.h>
+#include <errno.h>
 
 int WlanInit()
 {
-    //if (wlanInitialized) return 0;
-
-
-
-    wlanInitialized = false; // TODO sockets
+    wlanInitialized = true;
     return 0;
 }
 
 int WlanTerm()
 {
     if (!wlanInitialized) return 0;
-//    WSACleanup();
-    // TODO shut down SOC
     wlanInitialized = false;
     return 0;
 }
@@ -174,7 +170,6 @@ int SocketFree(Socket* socket)
 
 int SetSockNoBlock(int s, u32 val)
 {
-    unsigned long nonblocking = 1;
     fcntl(s, F_SETFL, fcntl(s, F_GETFL, 0) | O_NONBLOCK);
 
     return 1;
@@ -185,20 +180,20 @@ int SocketConnect(Socket* socket1, char* host, int port)
 
     //if (!wlanInitialized) return 0;
 
-    socket1->sock = socket(AF_INET, SOCK_STREAM, 0);
+    socket1->sock = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (socket1->sock < 0) ;//error("socket");
 
     struct hostent *hp;
     hp = gethostbyname(host);
 
     socket1->addrTo.sin_family = AF_INET;
-    socket1->addrTo.sin_addr.s_addr = inet_addr(inet_ntoa(*(struct in_addr*)hp->h_addr));
+//    socket1->addrTo.sin_addr.s_addr = hp->h_addr;
+    memcpy(&socket1->addrTo.sin_addr.s_addr, hp->h_addr, hp->h_length);
     socket1->addrTo.sin_port = htons(port);
 
     SetSockNoBlock(socket1->sock, 1);
 
-    connect(socket1->sock, (struct sockaddr *)&socket1->addrTo, sizeof socket1->addrTo);
-
+    int status = connect(socket1->sock, (struct sockaddr *)&socket1->addrTo, sizeof socket1->addrTo);
     return 1;
 }
 
@@ -249,7 +244,6 @@ int SocketSend(Socket* socket, char* buf, int size)
     //if (!wlanInitialized) return 0;
 
     int n = send(socket->sock,buf,size,0);
-
     return n;
 }
 
@@ -268,14 +262,12 @@ int SocketSendUdp(Socket* socket, char* buf, int size)
         total += n;
         bytesleft -= n;
     }
-    
     return 1;
 }
 
 int SocketClose(Socket* socket)
 {
     //if (!wlanInitialized) return 0;
-    
     closesocket(socket->sock);
     return 1;
 }

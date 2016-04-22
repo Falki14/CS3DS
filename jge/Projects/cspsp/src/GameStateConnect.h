@@ -8,6 +8,12 @@
 #include "ListBox.h"
 
 #if defined(WIN32) || defined(_3DS)
+#include <cstdio>
+#include <dirent.h>
+#include <unistd.h>
+#include <cstring>
+
+#define stricmp strcasecmp
 #else
 #include <malloc.h>
 #include <pspdisplay.h>

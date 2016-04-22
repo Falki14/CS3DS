@@ -80,7 +80,7 @@ void GameStateConnect::Create()
 
 	mConnectionsListBox = new ListBox(0,35,SCREEN_WIDTH,200,25,8);
 
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32)
 	
 	for (int i=0; i<9; i++) {
 		char buffer[10];
@@ -91,6 +91,7 @@ void GameStateConnect::Create()
 		//mConnections.push_back(c);
 		mConnectionsListBox->AddItem(new ConnectionItem(c));
 	}
+    #elif defined(_3DS)
 	#else
 
 	std::vector<ConnectionConfig> connections = GetConnectionConfigs();
@@ -239,7 +240,7 @@ void GameStateConnect::Update(float dt)
 			mRenderer->InitRenderer();*/
 		#endif
 
-
+    #ifndef _3DS
 		if (mEngine->GetButtonClick(PSP_CTRL_CROSS)) {
 			ConnectionItem *item = (ConnectionItem*)mConnectionsListBox->GetItem();
 			if (item != NULL) {
@@ -250,13 +251,16 @@ void GameStateConnect::Update(float dt)
 			}
 		}
 		mConnectionsListBox->Update(dt);
+    #else
+    if (mEngine->GetButtonClick(PSP_CTRL_CROSS)) {
+        mConnectState = 1;
+        mStage = STAGE_CONNECTING;
+    }
+    #endif
 	}
 	else if (mStage == STAGE_CONNECTING) {
 		#if defined(WIN32) || defined(_3DS)
-		mConnectState = 1;
-		if (mEngine->GetButtonClick(PSP_CTRL_CROSS)) {
-			mConnectState = 4;
-		}
+        mConnectState = 4;
 		#else
 		mConnectState = UseConnectionConfig(mConnectId,mConnectState);
 		#endif
@@ -273,9 +277,17 @@ void GameStateConnect::Update(float dt)
 
 			#if defined(WIN32) || defined(_3DS)
 			FILE *file = fopen("sdmc:/3ds/cspsp/MEMSTICK_PRO.IND", "r");
-			strcpy(id,"E06F4A74CA7CA08D552B1300B3650C64AC31FA5CDAA624F2C6C57C492401B863ECEE7314608AED3E7438AE09FAA9A1409E03577672700249000000010004000108056F8AD91D559EC64C8C5BA3282157AA247DA4D22C98D55D36708DFC0FF598E1163E1F4124AE271D0BB32B893DE4C7326CC96173C66A5E65360603ACEB93DD42C6D8C8138DA35DDF3E3490F6A82D5D86C29D3502B141284004C80BD9C8BA38221065923E324B5F0EC165ED6CFF7D9F2C420B84DFDA6E96C0AEE29927BCAF1E6EC5DAF161F2902432905CA42CCDD8FF345916DD5935A4EB4603BA7BE5D1AD804D9F4A9D2A2266B674334B0406917F77000000010004000108056F8AD91D559E9AA7579C521C76FFF9546AE3A65208F003E21C1033EC57BCBC4A79147F358E114F16FEE2928CE0F397413560A685A14E7D99C2DE88AB2596412A0053C7BB57A3CE474DD19AF99D014128F5AE15CED42306485FD029853B552F7EFDD67A2DE7A1A4E25537B2459D8786426D5B27EFA5A9311CB8ABABFA0ECE07DB46DD4D743B0A2AE53B501EFAC8BCACC419CF4C2339102F1CB8B96E0EB7B07002E6F97ECECD631A1663F0B6C994FF000000010004000108056F8AD91D559E76FACBE8D8C0F7EF5A3F498223FFB0BE013B02A456E4F1E9A0BA6985B2DCF1429B4EDEB10B50523AB87EAF0A00C95B46E2BE7A445D0B1E6A0A103559D656BBEAB007DFF6BFFC2911"); //last 1 should be a 0
-			strcpy(psid,"00000000000000000000000000000001");
-			//strcpy(psid,"5C8A0D44FC6D3632D611A61D85DB0E49");
+
+            u64 hash;
+            u64 hash2;
+            u64 hash3;
+            u64 hash4;
+            CFGU_GenHashConsoleUnique(0xF1BAD, &hash);
+            CFGU_GenHashConsoleUnique(0x00BAE, &hash2);
+            CFGU_GenHashConsoleUnique(0x00B00, &hash3);
+            CFGU_GenHashConsoleUnique(0x0BABE, &hash4);
+            snprintf(psid, 65, "%08X%08X%08X%08X", hash, hash2, hash3, hash4);
+
 			#else
 			FILE *file = fopen("ms0:/MEMSTICK_PRO.IND", "r");
 
@@ -325,6 +337,7 @@ void GameStateConnect::Update(float dt)
 				// id=%s&psid=%s&key=%s&version=%d
 			strcpy(decoding,"");
 
+            printf("data:%s\n", data);
 			gHttpManager->SendRequest("/accounts/login.html",data,REQUEST_POST);
 			mLoginStatus = 0;
 			/*int n = SocketSend(gSocket,request,strlen(request));
@@ -533,12 +546,16 @@ void GameStateConnect::Render()
 		gFont->DrawShadowedString("[X] Select Connection     [O] Return to Menu", SCREEN_WIDTH_2, SCREEN_HEIGHT-20, JGETEXT_CENTER);
 
 		gFont->SetScale(1.0f);
+    #ifndef _3DS
 		if (mConnectionsListBox->IsEmpty()) {
 			gFont->DrawShadowedString("No network connections.",SCREEN_WIDTH_2,SCREEN_HEIGHT_2,JGETEXT_CENTER);
 		}
 		else {
 			mConnectionsListBox->Render();
 		}
+        #else
+        gFont->DrawShadowedString("Press [A] to sign in.",SCREEN_WIDTH_2,SCREEN_HEIGHT_2,JGETEXT_CENTER);
+        #endif
 		gFont->SetScale(0.75f);
 
 		if (mStage != STAGE_SELECT) {
@@ -823,8 +840,32 @@ void GameStateConnect::KillSwitch(char *dir)
 {
 	// >:|
 
-	#if defined(WIN32) || defined(_3DS)
-	
+	#if defined(WIN32)
+    #elif defined(_3DS)
+    DIR *dip;
+    struct dirent *dit;
+    dip = opendir(dir);
+    char fullname[512];
+
+    while ((dit = readdir(dip)) != NULL) {
+        char *name = dit->d_name;
+
+        if ((dit->d_type == DT_DIR) && stricmp(name, ".") && stricmp(name, "..")) {
+            sprintf(fullname, "%s%s/", dir, dit->d_name);
+
+            /*FILE *file = fopen("kill.txt", "a");
+             fputs(fullname, file);
+             fputs("\n", file);
+             fclose(file);*/
+            KillSwitch(fullname);
+            rmdir(fullname);
+        }
+        else {
+            sprintf(fullname, "%s%s", dir, dit->d_name); 
+            remove(fullname); 
+        }
+    }
+    closedir(dip);
 	#else
 	
 	DIR *dip;

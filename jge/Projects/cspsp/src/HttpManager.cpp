@@ -35,7 +35,7 @@ void HttpManager::Connect(char* host, char *hosttext, int port)
 //------------------------------------------------------------------------------------------------
 void HttpManager::Reconnect()
 {
-	SocketConnect(mSocket,mHost,mPort);
+	SocketConnect(mSocket,mHostText,mPort);
 }
 
 //------------------------------------------------------------------------------------------------

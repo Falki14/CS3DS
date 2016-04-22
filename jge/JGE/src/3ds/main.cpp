@@ -17,6 +17,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <malloc.h>
+
 #include <GL/gl.h>
 
 #include <sys/time.h>
@@ -259,10 +261,21 @@ bool CreateGLWindow(char* title, int width, int height, int bits)
     return true;
 }
 
+#define SOC_ALIGN       0x1000
+#define SOC_BUFFERSIZE  0x100000
+
+static u32 *SOC_buffer = NULL;
+
 int main(int argc, char **argv) {
     gfxInitDefault();
     hidInit();
     osSetSpeedupEnable(true);
+    cfguInit();
+
+    SOC_buffer = (u32*)memalign(SOC_ALIGN, SOC_BUFFERSIZE);
+    if (socInit(SOC_buffer, SOC_BUFFERSIZE) != 0) {
+//        printf("SOC init error\n");
+    }
 
     ndspInit();
     ndspSetMasterVol(0.15f);
@@ -325,6 +338,9 @@ int main(int argc, char **argv) {
 
     KillGLWindow();
     ndspExit();
+    socExit();
+    free(SOC_buffer);
+    cfguExit();
     hidExit();
     gfxExit();
     return 0;
