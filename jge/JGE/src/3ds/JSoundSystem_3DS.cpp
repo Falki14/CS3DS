@@ -194,7 +194,7 @@ JSample *JSoundSystem::LoadSample(const char *fileName)
         if (fileSystem->OpenFile(fileName))
         {
             int size = fileSystem->GetFileSize();
-            s8 *buffer = (s8 *)linearAlloc(size);
+            u8 *buffer = (u8 *)linearAlloc(size);
             fileSystem->ReadFile(buffer, size);
             ndspWaveBuf waveBuf;
             memset(&waveBuf,0,sizeof(ndspWaveBuf));
@@ -203,7 +203,7 @@ JSample *JSoundSystem::LoadSample(const char *fileName)
             sample->mSample = (u32 *)buffer;
             sample->waveBuf = waveBuf;
             for (int i = 0; i < size; ++i) {
-                buffer[i] = buffer[i] - 127;
+                buffer[i] = buffer[i] + 0x80;
             }
             DSP_FlushDataCache(buffer, size);
             fileSystem->CloseFile();
