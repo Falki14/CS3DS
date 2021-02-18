@@ -17,7 +17,7 @@
 #include "hgecolor.h"
 #include "hgerect.h"
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 #include <cstring>
 #endif
 

@@ -19,7 +19,7 @@
 #define STAGE_UPDATEFAIL 6
 #define STAGE_RETURN 7
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
 #define strcmpi strcasecmp

@@ -11,7 +11,7 @@
 #ifndef _SPRITE_H_
 #define _SPRITE_H_
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 #include <math.h>
 #else
 #include <fastmath.h>

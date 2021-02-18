@@ -1,6 +1,6 @@
 #include "GameStateNewGame.h"
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 #include <malloc.h>
 #endif
 
@@ -30,7 +30,7 @@ void GameStateNewGame::Create()
 		sprintf(buffer,"test%d",i);
 		mMapsListBox->AddItem(new MapItem(buffer));
 	}
-    #elif defined(_3DS)
+    #elif defined(_3DS) || defined(_SWITCH)
     int index = 0;
     DIR *dip;
     struct dirent *dit;

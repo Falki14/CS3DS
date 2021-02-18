@@ -6,9 +6,9 @@
 #include "GameState.h"
 #include "MenuItem.h"
 #include "ListBox.h"
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
 #define strcmpi strcasecmp

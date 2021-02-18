@@ -19,7 +19,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 
 #include <png.h>
 //#include "../../Dependencies/include/fmod.h"
@@ -92,7 +92,7 @@ void JGE::SetDelta(int delta)
 	mDeltaTime = (float)delta / 1000.0f;		// change to second
 }
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 int GetTickCount();
 #endif
 

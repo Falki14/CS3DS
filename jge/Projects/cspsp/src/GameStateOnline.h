@@ -3,7 +3,7 @@
 
 #ifdef WIN32
 #include <direct.h>
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -13,7 +13,7 @@
 
 #ifdef WIN32
 
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 
 #else
 
@@ -460,7 +460,7 @@ public:
 
 	JTexture* mTex;
 	
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	float mTX0;
 	float mTY0;
 	float mTX1;

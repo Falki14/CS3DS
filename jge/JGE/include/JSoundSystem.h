@@ -52,7 +52,7 @@ public:
 	JMusic();
 	~JMusic();
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	FSOUND_SAMPLE *mTrack;		// MP3 needed to be of "sample" type for FMOD, FMUSIC_MODULE is for MODs
 #else
 	JCooleyesMP3* mTrack;
@@ -76,7 +76,7 @@ public:
 
 #if defined(WIN32)
 	FSOUND_SAMPLE *mSample;
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
     u32 *mSample;
     ndspWaveBuf waveBuf;
 #else
@@ -201,7 +201,7 @@ protected:
 
 private:
 	
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 
 	JMusic *mCurrentMusic;
 

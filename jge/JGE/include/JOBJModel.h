@@ -15,7 +15,7 @@
 
 using namespace std;
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 
 #else
 

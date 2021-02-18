@@ -47,7 +47,7 @@ void GameStatePlay::Create()
 	}
 
 	//mMusic = mSoundSystem->LoadMusic("sfx/Raindrops.mp3");
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	mMusic = mSoundSystem->LoadMusic("sfx/Raindrops.mp3");
 	#else
 	//mMusic = mSoundSystem->LoadMusic("sfx/Raindrops.mp3");
@@ -194,7 +194,7 @@ void GameStatePlay::Start()
 		if (strcmp(music,"on") == 0) {
 			mMusicSwitch = ON;
 			//mSoundSystem->PlayMusic(mMusic,true);
-			#if defined(WIN32) || defined(_3DS)
+			#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 			mSoundSystem->PlayMusic(mMusic,true);
 			#else
 			//mSoundSystem->PlayMusic(mMusic,true);
@@ -216,7 +216,7 @@ void GameStatePlay::End()
 
 	//mSoundSystem->StopMusic(mMusic);
 	if (mMusicSwitch == ON) {
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 		mSoundSystem->StopMusic(mMusic);
 		#else
 		//mSoundSystem->StopMusic(mMusic);

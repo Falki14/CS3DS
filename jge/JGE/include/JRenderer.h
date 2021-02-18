@@ -25,7 +25,7 @@
 
 	#include <windows.h>
 
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 
 #else
 

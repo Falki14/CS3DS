@@ -7,7 +7,7 @@
 #include "Wlan.h"
 #include "ListBox.h"
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 #include <cstdio>
 #include <dirent.h>
 #include <unistd.h>

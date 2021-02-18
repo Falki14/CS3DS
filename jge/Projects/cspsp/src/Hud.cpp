@@ -112,7 +112,7 @@ void Hud::Render()
 		gFont->DrawShadowedString(mKillEvents[i].victimname,x,y,JGETEXT_RIGHT);
 		x -= gFont->GetStringWidth(mKillEvents[i].victimname);
 
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 		mRenderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE);
 		#else
 		mKillEvents[i].weapon->mBlend = GU_TFX_ADD;
@@ -123,7 +123,7 @@ void Hud::Render()
 		mRenderer->RenderQuad(mKillEvents[i].weapon,x,y+5);
 		mKillEvents[i].weapon->SetColor(ARGB(255,255,255,255));
 
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 		mRenderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
 		#else
 		mKillEvents[i].weapon->mBlend = GU_TFX_MODULATE;

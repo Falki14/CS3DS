@@ -18,7 +18,7 @@
 
 #ifdef WIN32
 
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 
 #else
 	#include <pspiofilemgr.h>
@@ -115,7 +115,7 @@ private:
 	string mZipFileName;
 	char *mPassword;
 	bool mZipAvailable;
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	FILE *mFile;
 #else
 	SceUID mFile;

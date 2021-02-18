@@ -2,7 +2,7 @@
 #include "TileMap.h"
 #include "Globals.h"
 
-#ifdef _3DS
+#ifdef _3DS || _SWITCH
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
 #define strcmpi strcasecmp

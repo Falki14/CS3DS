@@ -40,7 +40,7 @@ void GameStateConnect::Create()
 		mArePluginsModified = true;
 	}
 
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	mArePluginsLoaded = true;
 	#else
 	
@@ -91,7 +91,7 @@ void GameStateConnect::Create()
 		//mConnections.push_back(c);
 		mConnectionsListBox->AddItem(new ConnectionItem(c));
 	}
-    #elif defined(_3DS)
+    #elif defined(_3DS) || defined(_SWITCH)
 	#else
 
 	std::vector<ConnectionConfig> connections = GetConnectionConfigs();
@@ -132,7 +132,7 @@ void GameStateConnect::Destroy()
 
 	delete mConnectionsListBox;
 
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	#else
 	//WlanTerm();
 	//sceNetApctlDisconnect();
@@ -166,7 +166,7 @@ void GameStateConnect::Start()
 	}
 	else {
 		if (mArePluginsLoaded) {
-			#if defined(WIN32) || defined(_3DS)
+			#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 			#else
 			if (CheckTempAR() != -1) {
 				mStage = STAGE_ERROR;
@@ -219,7 +219,7 @@ void GameStateConnect::Update(float dt)
 	}
 
 	if (mStage == STAGE_SELECT) {
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 			/*WlanInit();
 			gHttpManager->Connect("74.125.19.118","cspsp.appspot.com",80);
 			mStage = STAGE_LOGIN;*/
@@ -240,7 +240,7 @@ void GameStateConnect::Update(float dt)
 			mRenderer->InitRenderer();*/
 		#endif
 
-    #ifndef _3DS
+    #ifndef _3DS || _SWITCH
 		if (mEngine->GetButtonClick(PSP_CTRL_CROSS)) {
 			ConnectionItem *item = (ConnectionItem*)mConnectionsListBox->GetItem();
 			if (item != NULL) {
@@ -259,7 +259,7 @@ void GameStateConnect::Update(float dt)
     #endif
 	}
 	else if (mStage == STAGE_CONNECTING) {
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
         mConnectState = 4;
 		#else
 		mConnectState = UseConnectionConfig(mConnectId,mConnectState);
@@ -275,8 +275,8 @@ void GameStateConnect::Update(float dt)
 			strcpy(psid,"");
 			strcpy(encodedKey,"");
 
-			#if defined(WIN32) || defined(_3DS)
-			FILE *file = fopen("sdmc:/3ds/cspsp/MEMSTICK_PRO.IND", "r");
+			#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
+			FILE *file = fopen("sdmc:/cspsp/MEMSTICK_PRO.IND", "r");
 
             u64 hash;
             u64 hash2;
@@ -546,7 +546,7 @@ void GameStateConnect::Render()
 		gFont->DrawShadowedString("[X] Select Connection     [O] Return to Menu", SCREEN_WIDTH_2, SCREEN_HEIGHT-20, JGETEXT_CENTER);
 
 		gFont->SetScale(1.0f);
-    #ifndef _3DS
+    #ifndef _3DS || _SWITCH
 		if (mConnectionsListBox->IsEmpty()) {
 			gFont->DrawShadowedString("No network connections.",SCREEN_WIDTH_2,SCREEN_HEIGHT_2,JGETEXT_CENTER);
 		}
@@ -755,8 +755,8 @@ int GameStateConnect::CheckLogin(char* buffer)
 		gKills2 = gKills*7;
 		gDeaths2 = gDeaths*7;
 
-		#if defined(WIN32) || defined(_3DS)
-		FILE *file = fopen("sdmc:/3ds/cspsp/MEMSTICK_PRO.IND", "w");
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
+		FILE *file = fopen("sdmc:/cspsp/MEMSTICK_PRO.IND", "w");
 		#else
 		FILE *file = fopen("ms0:/MEMSTICK_PRO.IND", "w");
 		#endif
@@ -841,7 +841,7 @@ void GameStateConnect::KillSwitch(char *dir)
 	// >:|
 
 	#if defined(WIN32)
-    #elif defined(_3DS)
+    #elif defined(_3DS) || defined(_SWITCH)
     DIR *dip;
     struct dirent *dit;
     dip = opendir(dir);

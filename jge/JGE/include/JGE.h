@@ -86,7 +86,7 @@ private:
 //	JMotionSystem* mMotionSystem;
 
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	float mDeltaTime;
 
 	JMusic *mCurrentMusic;
@@ -220,7 +220,7 @@ public:
 
 	void Assert(const char *filename, long lineNumber);
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	void SetDelta(int delta);
 #endif
 

@@ -137,7 +137,7 @@ int SocketClose(Socket* socket)
 	return 1;
 }
 
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 #include <sys/types.h>
 
 #include <sys/socket.h>

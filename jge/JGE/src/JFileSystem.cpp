@@ -47,7 +47,7 @@ void JFileSystem::Destroy()
 JFileSystem::JFileSystem()
 {
 	mZipAvailable = false;
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 	mFile = NULL;
 #else
 	mFile = -1;
@@ -124,7 +124,7 @@ bool JFileSystem::OpenFile(const string &filename)
 	}
 	else
 	{
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 			mFile = fopen(path.c_str(), "rb");
 			if (mFile != NULL)
 			{
@@ -156,7 +156,7 @@ void JFileSystem::CloseFile()
 	if (mZipAvailable && mZipFile != NULL)
 		return;
 
-	#if defined(WIN32) || defined(_3DS)
+	#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 		if (mFile != NULL)
 			fclose(mFile);
 	#else
@@ -174,7 +174,7 @@ int JFileSystem::ReadFile(void *buffer, int size)
 	}
 	else
 	{
-		#if defined(WIN32) || defined(_3DS)
+		#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 			return fread(buffer, 1, size, mFile);
 		#else
 			return sceIoRead(mFile, buffer, size);

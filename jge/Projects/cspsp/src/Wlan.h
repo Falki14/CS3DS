@@ -11,7 +11,7 @@
 
 #define bzero(p, l) memset(p, 0, l)
 #define bcopy(s, t, l) memmove(t, s, l)
-#elif defined(_3DS)
+#elif defined(_3DS) || defined(_SWITCH)
 #include "JGE.h"
 #include <stdio.h>
 #include <stdlib.h>
