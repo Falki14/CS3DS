@@ -22,7 +22,7 @@
 
 //#define _MP3_ENABLED_
 
-#if defined(WIN32) || defined(_3DS)
+#if defined(WIN32) || defined(_3DS) || defined(_SWITCH)
 
     #ifdef WIN32
 	#include <windows.h>
@@ -39,6 +39,10 @@
 
 #ifdef _3DS
 #include <3ds.h>
+#endif
+
+#ifdef _SWITCH
+#include <switch.h>
 #endif
 
 #else

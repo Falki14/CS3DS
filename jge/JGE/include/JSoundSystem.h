@@ -25,6 +25,8 @@
 
 #elif defined(_3DS)
     #include <3ds.h>
+#elif defined(_SWITCH)
+    #include <switch.h>
 #else
 
 	#include <pspgu.h>
